@@ -1,0 +1,77 @@
+<div class="main-container">
+  <div class="top-container">
+    <form [formGroup]="form">
+      <tui-filter
+        formControlName="filters"
+        [content]="content"
+        [items]="items">
+        <div class="filters-container">
+
+        </div>
+      </tui-filter>
+    </form>
+    <ng-template
+      #content
+      let-item
+    >
+      {{ item }}
+    </ng-template>
+    <tui-input
+      formControlName="testValue"
+      tuiTextfieldSize="m"
+      [tuiTextfieldCleaner]="true"
+      [tuiTextfieldLabelOutside]="true">
+      Введите название вопроса
+    </tui-input>
+  </div>
+  <div class="image-wrapper">
+    <table class="tui-table">
+      <tbody>
+      <tr>
+        <th class="tui-table__th tui-table__th_first">Наименование теста</th>
+        <th class="tui-table__th">Дата создания</th>
+        <th class="tui-table__th">Дата последнего изменения</th>
+        <th class="tui-table__th">Кол-во вопросов</th>
+        <th class="tui-table__th tui-table__th_last"> Ред./Удал.</th>
+      </tr>
+      </tbody>
+      <tbody>
+      <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let test of tests">
+        <td class="tui-table__td tui-table__td_first">{{ test.testName }}</td>
+        <td class="tui-table__td">{{ test.creationDate | date }}</td>
+        <td class="tui-table__td">{{ test.lastChangeDate | date }}</td>
+        <td class="tui-table__td"></td>
+        <td class="tui-table__td tui-table__td_last">
+          <div class="two-column-container">
+            <button tuiButton (click)="showEditOverlay(test.id)">Редактировать</button>
+            <button tuiButton (click)="deleteTest(test.id)">Удалить</button>
+          </div>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bottom-container">
+    <button tuiButton (click)="showAddOverlay()">Добавить тест</button>
+    <button tuiButton (click)="loadTets()">Обновить</button>
+    <div class="pagination-container">
+      <tui-pagination
+        size="l"
+        [index]="index"
+        [length]="length"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
+  </div>
+</div>
+<app-tests-add-overlay
+  [isVisible]="isAddOverlayVisible" (close)="hideAddOverlay()">
+</app-tests-add-overlay>
+
+<app-tests-edit-overlay
+  *ngIf="selectedTestId !== null"
+  [isVisible]="isEditOverlayVisible"
+  [testId]="selectedTestId"
+  (close)="hideEditOverlay()">
+</app-tests-edit-overlay>

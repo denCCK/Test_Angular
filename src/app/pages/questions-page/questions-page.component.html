@@ -1,0 +1,83 @@
+<meta charset="utf-8">
+<div class="main-container">
+  <div class="top-container">
+    <form [formGroup]="form">
+      <tui-filter
+        formControlName="filters"
+        [content]="content"
+        [items]="items">
+        <div class="filters-container">
+
+        </div>
+      </tui-filter>
+    </form>
+    <ng-template
+      #content
+      let-item
+    >
+      {{ item }}
+    </ng-template>
+    <tui-input
+      formControlName="testValue"
+      tuiTextfieldSize="m"
+      [tuiTextfieldCleaner]="true"
+      [tuiTextfieldLabelOutside]="true">
+      Введите название вопроса
+    </tui-input>
+  </div>
+  <div class="image-wrapper">
+    <table class="tui-table">
+      <tbody>
+      <tr>
+        <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
+        <th class="tui-table__th">Сложность</th>
+        <th class="tui-table__th">Тип</th>
+        <th class="tui-table__th">Практ./Теор.</th>
+        <th class="tui-table__th">Дата создания</th>
+        <th class="tui-table__th">Дата последнего изменения</th>
+        <th class="tui-table__th tui-table__th_last">Ред./Удал.</th>
+      </tr>
+      </tbody>
+      <tbody>
+      <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let question of questions">
+        <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
+        <td class="tui-table__td">{{ question.difficulty }}</td>
+        <td class="tui-table__td">{{ question.answersType }}</td>
+        <td class="tui-table__td">{{ question.questionType }}</td>
+        <td class="tui-table__td">{{ question.creationDate | date }}</td>
+        <td class="tui-table__td">{{ question.lastChangeDate | date }}</td>
+        <td class="tui-table__td tui-table__td_last">
+          <div class="two-column-container">
+            <button tuiButton (click)="showEditOverlay(question.id)">Редактировать</button>
+            <button tuiButton (click)="deleteQuestion(question.id)">Удалить</button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="bottom-container">
+    <button tuiButton (click)="showAddOverlay()">Добавить вопрос</button>
+    <button tuiButton (click)="loadQuestions()">Обновить</button>
+    <div class="pagination-container">
+      <tui-pagination
+        size="l"
+        [index]="index"
+        [length]="length"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
+  </div>
+</div>
+
+<questions-add-overlay
+  [isVisible]="isAddOverlayVisible" (close)="hideAddOverlay()">
+</questions-add-overlay>
+
+<app-questions-edit-overlay
+  *ngIf="selectedQuestionId !== null"
+  [isVisible]="isEditOverlayVisible"
+  [questionId]="selectedQuestionId"
+  (close)="hideEditOverlay()">
+</app-questions-edit-overlay>

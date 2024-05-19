@@ -1,0 +1,19 @@
+<div class="main-container">
+  <div class="image-wrapper" >
+    <h2 class="title">Вход</h2>
+    <form class="form-container" >
+      <div class="input-group">
+        <label for="login" class="label">Логин</label>
+        <input id="login" class="input" type="text" aria-label="Логин" placeholder="Qwerty12"/>
+      </div>
+      <div class="input-group">
+        <label for="password" class="label">Пароль</label>
+        <input id="password" class="input" type="password" aria-label="Пароль" placeholder="1156"/>
+      </div>
+    </form>
+    <button tuiButton class="button" type="submit" routerLink="main">Войти</button>
+  </div>
+</div>
+<div *ngIf="loginError" class="error-message">
+  Неверное имя пользователя или пароль.
+</div>

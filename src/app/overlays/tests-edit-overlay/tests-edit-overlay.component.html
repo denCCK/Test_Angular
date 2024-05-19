@@ -1,0 +1,74 @@
+<div class="overlay" *ngIf="isVisible">
+  <div class="overlay-content">
+
+    <header class="header">
+      Изменение теста
+    </header>
+
+    <nav class="steps">
+      <div class="step"><span class="step-number">1</span>Название</div>
+      <div class="step"><span class="step-number">2</span>Описание</div>
+      <div class="step"><span class="step-number">3</span>Выбор вопросов</div>
+    </nav>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="main-container">
+        <label for="questionTitle" class="label">Название теста</label>
+        <tui-input id="questionTitle" class="input" formControlName="testTitle" placeholder="Введите название" aria-label="Введите название теста" />
+      </div>
+
+      <div class="main-container">
+        <label for="questionDescription" class="label">Описание теста</label>
+        <tui-textarea id="questionDescription" class="input" formControlName="testDescription" placeholder="Введите постановку вопроса" aria-label="Описнаие теста" />
+      </div>
+
+      <div class="main-container">
+        <app-question-selector
+          [questions]="questions"
+          (questionsSelected)="onQuestionsSelected($event)">
+        </app-question-selector>
+      </div>
+
+
+      <div class="main-container">
+        <div class="question-selector">
+          <h2>Выбранные вопросы</h2>
+          <table class="tui-table">
+            <tbody>
+            <tr>
+              <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
+              <th class="tui-table__th">Сложность</th>
+              <th class="tui-table__th">Тип</th>
+              <th class="tui-table__th">Практ./Теор.</th>
+              <th class="tui-table__th tui-table__th_last"></th>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let question of selectedQuestions">
+              <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
+              <td class="tui-table__td">{{ question.difficulty }}</td>
+              <td class="tui-table__td">{{ question.answersType }}</td>
+              <td class="tui-table__td">{{ question.questionType }}</td>
+              <td class="tui-table__td tui-table__td_last">
+                <button (click)="removeQuestion(question)">Убрать вопрос</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <div class="two-column-container">
+          <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
+          <button type="button" tuiButton (click)="onSubmit()">Изменить</button>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+

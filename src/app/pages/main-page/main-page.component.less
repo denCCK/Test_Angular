@@ -1,0 +1,34 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.less';
+
+
+.wrapper {
+  .inset-border(bottom, bold);
+  display: flex;
+  align-items: center;
+  margin: 40px 40px 0 40px;
+  padding: 0 0 20px 0;
+}
+
+.content {
+  padding: 2rem 2rem 4rem;
+}
+
+.title {
+  min-width: 15.625rem;
+  margin: 0;
+}
+
+.tabs {
+  width: ~'calc(100% - 15.625rem)';
+  justify-content: flex-end;
+  box-shadow: none;
+}
+
+.icon {
+  .transition(transform);
+  margin-left: 0.25rem;
+
+  &_rotated {
+    transform: rotate(180deg);
+  }
+}
