@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {LoginPageComponent} from "./pages/login-page/login-page.component";
-import {TestingPageComponent} from "./pages/users-page/testing-page.component";
+import {TestingPageComponent} from "./pages/testsession-page/testing-page.component";
 import {MainPageComponent} from "./pages/main-page/main-page.component";
 import {QuestionsPageComponent} from "./pages/questions-page/questions-page.component";
 import {TestsPageComponent} from "./pages/tests-page/tests-page.component";

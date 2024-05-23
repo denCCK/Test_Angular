@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<div class="main-container">
+<div class="container">
   <div class="top-container">
     <form [formGroup]="form">
       <tui-filter
@@ -48,8 +48,8 @@
         <td class="tui-table__td">{{ question.lastChangeDate | date }}</td>
         <td class="tui-table__td tui-table__td_last">
           <div class="two-column-container">
-            <button tuiButton (click)="showEditOverlay(question.id)">Редактировать</button>
-            <button tuiButton (click)="deleteQuestion(question.id)">Удалить</button>
+            <tui-svg (click)="showEditOverlay(question.id)" src="tuiIconEditLarge" ></tui-svg>
+            <tui-svg (click)="deleteQuestion(question.id)" src="tuiIconTrash2Large"></tui-svg>
           </div>
         </td>
       </tr>

@@ -11,7 +11,7 @@ import {User} from "../../models/user";
 @Component({
   selector: 'questions-add-overlay',
   templateUrl: './questions-add-overlay.component.html',
-  styleUrl: './questions-add-overlay.component.css'
+  styleUrl: './questions-add-overlay.component.less'
 })
 export class QuestionsAddOverlayComponent {
   form: FormGroup;

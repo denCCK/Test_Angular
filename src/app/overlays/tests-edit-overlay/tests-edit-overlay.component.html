@@ -13,17 +13,17 @@
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <div class="main-container">
+      <div class="container">
         <label for="questionTitle" class="label">Название теста</label>
         <tui-input id="questionTitle" class="input" formControlName="testTitle" placeholder="Введите название" aria-label="Введите название теста" />
       </div>
 
-      <div class="main-container">
+      <div class="container">
         <label for="questionDescription" class="label">Описание теста</label>
         <tui-textarea id="questionDescription" class="input" formControlName="testDescription" placeholder="Введите постановку вопроса" aria-label="Описнаие теста" />
       </div>
 
-      <div class="main-container">
+      <div class="container">
         <app-question-selector
           [questions]="questions"
           (questionsSelected)="onQuestionsSelected($event)">
@@ -31,7 +31,7 @@
       </div>
 
 
-      <div class="main-container">
+      <div class="container">
         <div class="question-selector">
           <h2>Выбранные вопросы</h2>
           <table class="tui-table">

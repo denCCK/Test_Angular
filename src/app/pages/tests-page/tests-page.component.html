@@ -1,4 +1,4 @@
-<div class="main-container">
+<div class="container">
   <div class="top-container">
     <form [formGroup]="form">
       <tui-filter
@@ -21,7 +21,7 @@
       tuiTextfieldSize="m"
       [tuiTextfieldCleaner]="true"
       [tuiTextfieldLabelOutside]="true">
-      Введите название вопроса
+      Введите название теста
     </tui-input>
   </div>
   <div class="image-wrapper">
@@ -43,8 +43,8 @@
         <td class="tui-table__td"></td>
         <td class="tui-table__td tui-table__td_last">
           <div class="two-column-container">
-            <button tuiButton (click)="showEditOverlay(test.id)">Редактировать</button>
-            <button tuiButton (click)="deleteTest(test.id)">Удалить</button>
+            <tui-svg (click)="showEditOverlay(test.id)" src="tuiIconEditLarge" ></tui-svg>
+            <tui-svg (click)="deleteTest(test.id)" src="tuiIconTrash2Large"></tui-svg>
           </div>
 
         </td>

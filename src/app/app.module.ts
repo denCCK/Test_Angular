@@ -21,16 +21,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {TuiAppBarModule} from "@taiga-ui/addon-mobile";
 import {
-    TuiFilterModule,
-    TuiInputModule, TuiInputNumberModule,
-    TuiPaginationModule,
-    TuiProgressModule,
-    TuiRadioLabeledModule,
-    TuiTabsModule, TuiTextareaModule
+  TuiFilterModule,
+  TuiInputModule, TuiInputNumberModule,
+  TuiPaginationModule,
+  TuiProgressModule,
+  TuiRadioLabeledModule, TuiStepperModule,
+  TuiTabsModule, TuiTextareaModule
 } from "@taiga-ui/kit";
 import {TuiActiveZoneModule} from "@taiga-ui/cdk";
 import {LoginPageComponent} from "./pages/login-page/login-page.component";
-import {TestingPageComponent} from "./pages/users-page/testing-page.component";
+import {TestingPageComponent} from "./pages/testsession-page/testing-page.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MainPageComponent} from "./pages/main-page/main-page.component";
 import {QuestionsPageComponent} from "./pages/questions-page/questions-page.component";
@@ -46,6 +46,10 @@ import { QuestionsEditOverlayComponent } from './overlays/questions-edit-overlay
 import { TestsAddOverlayComponent } from './overlays/tests-add-overlay/tests-add-overlay.component';
 import { TestsEditOverlayComponent } from './overlays/tests-edit-overlay/tests-edit-overlay.component';
 import { QuestionSelectorComponent } from './components/question-selector/question-selector.component';
+import {TuiDocNavigationModule} from "@taiga-ui/addon-doc";
+import { TestsessionAddOverlayComponent } from './overlays/testsession-add-overlay/testsession-add-overlay.component';
+import { TestsessionEditOverlayComponent } from './overlays/testsession-edit-overlay/testsession-edit-overlay.component';
+import { TestsessionViewOverlayComponent } from './overlays/testsession-view-overlay/testsession-view-overlay.component';
 
 @NgModule({
   declarations: [
@@ -64,40 +68,45 @@ import { QuestionSelectorComponent } from './components/question-selector/questi
     TestsAddOverlayComponent,
     TestsEditOverlayComponent,
     QuestionSelectorComponent,
-    TestsEditOverlayComponent
+    TestsEditOverlayComponent,
+    TestsessionAddOverlayComponent,
+    TestsessionEditOverlayComponent,
+    TestsessionViewOverlayComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        TuiRootModule,
-        TuiDialogModule,
-        TuiTableModule,
-        TuiAlertModule,
-        TuiAppBarModule,
-        TuiButtonModule,
-        TuiLabelModule,
-        TuiProgressModule,
-        TuiTabsModule,
-        TuiHostedDropdownModule,
-        TuiSvgModule,
-        TuiModeModule,
-        TuiDataListModule,
-        TuiActiveZoneModule,
-        TuiInputModule,
-        FormsModule,
-        TuiFilterModule,
-        ReactiveFormsModule,
-        TuiTextfieldControllerModule,
-        TuiPaginationModule,
-        TuiRadioLabeledModule,
-        TuiInputNumberModule,
-        BrowserModule,
-        HttpClientModule,
-        TuiScrollbarModule,
-        TuiTextareaModule
-    ],
-  providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    TuiRootModule,
+    TuiDialogModule,
+    TuiTableModule,
+    TuiAlertModule,
+    TuiAppBarModule,
+    TuiButtonModule,
+    TuiLabelModule,
+    TuiProgressModule,
+    TuiTabsModule,
+    TuiHostedDropdownModule,
+    TuiSvgModule,
+    TuiModeModule,
+    TuiDataListModule,
+    TuiActiveZoneModule,
+    TuiInputModule,
+    FormsModule,
+    TuiFilterModule,
+    ReactiveFormsModule,
+    TuiTextfieldControllerModule,
+    TuiPaginationModule,
+    TuiRadioLabeledModule,
+    TuiInputNumberModule,
+    BrowserModule,
+    HttpClientModule,
+    TuiScrollbarModule,
+    TuiTextareaModule,
+    TuiDocNavigationModule,
+    TuiStepperModule
+  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

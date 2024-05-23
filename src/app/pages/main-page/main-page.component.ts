@@ -1,11 +1,8 @@
 import {AfterViewInit, Component, inject, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {TestingPageComponent} from "../users-page/testing-page.component";
+import {TestingPageComponent} from "../testsession-page/testing-page.component";
 import {tuiIsString} from "@taiga-ui/cdk";
 import {QuestionsPageComponent} from "../questions-page/questions-page.component";
 import {TestsPageComponent} from "../tests-page/tests-page.component";
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import {User} from "../../models/user";
 
 @Component({
   selector: 'main-page',
@@ -17,8 +14,6 @@ export class MainPageComponent implements AfterViewInit{
     this.dynamic.clear();
     this.dynamic.createComponent(QuestionsPageComponent);
   }
-
-
 
   @ViewChild('dynamic', {read: ViewContainerRef})
   dynamic!: ViewContainerRef;
@@ -51,3 +46,7 @@ export class MainPageComponent implements AfterViewInit{
     }
   }
 }
+
+
+
+

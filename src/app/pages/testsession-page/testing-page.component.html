@@ -1,0 +1,81 @@
+<meta charset="utf-8">
+<div class="container">
+  <div class="top-container">
+    <form [formGroup]="form">
+      <tui-filter
+        formControlName="filters"
+        [content]="content"
+        [items]="items">
+        <div class="filters-container">
+
+        </div>
+      </tui-filter>
+    </form>
+    <ng-template
+      #content
+      let-item
+    >
+      {{ item }}
+    </ng-template>
+    <tui-input
+      formControlName="testValue"
+      tuiTextfieldSize="m"
+      [tuiTextfieldCleaner]="true"
+      [tuiTextfieldLabelOutside]="true">
+      Введите название тестирования
+    </tui-input>
+  </div>
+  <div class="image-wrapper">
+    <table class="tui-table">
+      <tbody>
+      <tr>
+        <th class="tui-table__th tui-table__th_first">Наименование</th>
+        <th class="tui-table__th">Время проведения</th>
+        <th class="tui-table__th">Статус</th>
+        <th class="tui-table__th">Дата создания</th>
+        <th class="tui-table__th">Дата последнего изменения</th>
+        <th class="tui-table__th tui-table__th_last">Ред./Удал.</th>
+      </tr>
+      </tbody>
+      <tbody>
+      <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let testsession of testsessions">
+        <td class="tui-table__td tui-table__td_first">{{ testsession.testsessionName }}</td>
+        <td class="tui-table__td">{{ testsession.startDate }} - {{ testsession.endDate }}</td>
+        <td class="tui-table__td"></td>
+        <td class="tui-table__td">{{ testsession.creationDate | date }}</td>
+        <td class="tui-table__td">{{ testsession.lastChangeDate | date }}</td>
+        <td class="tui-table__td tui-table__td_last">
+          <div class="two-column-container">
+            <tui-svg (click)="showViewOverlay(testsession.id)" src="tuiIconShowLarge"></tui-svg>
+            <tui-svg (click)="showEditOverlay(testsession.id)" src="tuiIconEditLarge"></tui-svg>
+            <tui-svg (click)="deleteTestsession(testsession.id)" src="tuiIconTrash2Large"></tui-svg>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="bottom-container">
+    <button tuiButton (click)="showAddOverlay()">Добавить</button>
+    <button tuiButton (click)="loadTestsession()">Обновить</button>
+    <div class="pagination-container">
+      <tui-pagination
+        size="l"
+        [index]="index"
+        [length]="length"
+        (indexChange)="goToPage($event)"
+      ></tui-pagination>
+    </div>
+  </div>
+</div>
+
+<app-testsession-add-overlay
+  [isVisible]="isAddOverlayVisible" (close)="hideAddOverlay()">
+</app-testsession-add-overlay>
+
+<!--<app-testsession-add-overlay-->
+<!--  *ngIf="selectedTestsessionId !== null"-->
+<!--  [testsessionId]="selectedTestsessionId"-->
+<!--  [isVisible]="isEditOverlayVisible" (close)="hideEditOverlay()">-->
+<!--</app-testsession-add-overlay>-->
