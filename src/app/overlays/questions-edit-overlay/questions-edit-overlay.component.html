@@ -1,79 +1,191 @@
 <div class="overlay" *ngIf="isVisible">
   <div class="overlay-content">
-    <div class="main-container">
-      <header class="header">
-        Изменение вопроса
-      </header>
-      <nav class="steps">
-        <div class="step"><span class="step-number">1</span>Название</div>
-        <div class="step"><span class="step-number">2</span>Постановка</div>
-        <div class="step"><span class="step-number">3</span>Баллы</div>
-        <div class="step"><span class="step-number">4</span>Сложность</div>
-        <div class="step"><span class="step-number">5</span>Тип</div>
-        <div class="step"><span class="step-number">6</span>Практ./Теор.</div>
-        <div class="step"><span class="step-number">7</span>Ответы</div>
-      </nav>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <div class="main-container">
-          <label for="questionTitle" class="label">Название вопроса</label>
-          <tui-input id="questionTitle" class="input" formControlName="questionTitle" placeholder="Введите название" aria-label="Введите название вопроса" />
-        </div>
+    <div class="container">
+      <h1 class="tui-text_h3 title">
+        Изменение вопросов
+      </h1>
+    </div>
 
-        <div class="main-container">
-          <label for="questionDescription" class="label">Постановка вопроса</label>
-          <tui-textarea id="questionDescription" class="input" formControlName="questionDescription" placeholder="Введите постановку вопроса" aria-label="Введите постановку вопроса" />
-        </div>
+    <div class="container">
+      <tui-stepper [activeItemIndex]="currentStep">
+        <button *ngFor="let step of steps; let i = index" tuiStep (click)="setStep(i)">
+          {{ step }}
+        </button>
+      </tui-stepper>
+    </div>
 
-        <div class="main-container">
-          <label for="questionPoints" class="label">Количество баллов</label>
-          <input id="questionPoints" class="input" formControlName="questionPoints" type="number" placeholder="Введите баллы" aria-label="Введите баллы" />
-        </div>
+    <tui-scrollbar class="box">
+      <div class="main-container">
 
-        <header>Уровень сложности</header>
-        <input id="complexity1" type="radio" formControlName="difficulty" [value]="1" name="difficulty" />
-        <label for="complexity1">1 уровень</label>
-        <input id="complexity2" type="radio" formControlName="difficulty" [value]="2" name="difficulty" />
-        <label for="complexity2">2 уровень</label>
-        <input id="complexity3" type="radio" formControlName="difficulty" [value]="3" name="difficulty" />
-        <label for="complexity3">3 уровень</label>
-        <input id="complexity4" type="radio" formControlName="difficulty" [value]="4" name="difficulty" />
-        <label for="complexity4">4 уровень</label>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <header>Тип ответов</header>
-        <div class="radio-group" (change)="onQuestionTypeChange($event)">
-          <input id="typeMultiple" type="radio" formControlName="answersType" value="multiple" name="answersType" />
-          <label for="typeMultiple">Варианты</label>
-          <input id="typeMatch" type="radio" formControlName="answersType" value="match" name="answersType" />
-          <label for="typeMatch">Соответствия</label>
-          <input id="typeOpen" type="radio" formControlName="answersType" value="open" name="answersType" />
-          <label for="typeOpen">Открытый</label>
-        </div>
-
-        <header>Практ./Теор.</header>
-        <input id="practical" type="radio" formControlName="questionType" value="practical" name="questionType" />
-        <label for="practical">Практический</label>
-        <input id="theoretical" type="radio" formControlName="questionType" value="theoretical" name="questionType" />
-        <label for="theoretical">Теоретический</label>
-
-        <div class="form-group answers">
-          <header>Ответы</header>
-          <ng-container [ngSwitch]="questionType">
-            <app-multiple-choice *ngSwitchCase="'multiple'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-multiple-choice>
-            <app-match *ngSwitchCase="'match'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-match>
-            <app-open *ngSwitchCase="'open'" [answers]="answers"  (formChange)="onAnswersFormChange($event)"></app-open>
-          </ng-container>
-
-        </div>
-        <div class="form-actions">
-          <div class="two-column-container">
-            <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
-            <button type="button" tuiButton (click)="onSubmit()">Изменить</button>
+          <div class="container" *ngIf="currentStep === 0">
+            <label for="questionTitle" class="label">Название вопроса</label>
+            <tui-input id="questionTitle" class="input" formControlName="questionTitle" ></tui-input>
+            <div *ngIf="form.controls['questionTitle'].invalid && form.controls['questionTitle'].touched" class="error">
+              Название вопроса обязательно для заполнения.
+            </div>
           </div>
 
-        </div>
-      </form>
+          <div class="container" *ngIf="currentStep === 1">
+            <label for="questionDescription" class="label">Постановка вопроса</label>
+            <tui-textarea id="questionDescription" class="input" formControlName="questionDescription"></tui-textarea>
+          </div>
+
+          <div class="container" *ngIf="currentStep === 2">
+            <label for="questionPoints" class="label">Количество баллов</label>
+            <tui-input-number id="questionPoints" class="input" formControlName="questionPoints"></tui-input-number>
+          </div>
+
+          <div class="container" *ngIf="currentStep === 3">
+            <header>Уровень сложности</header>
+            <input id="complexity1" type="radio" formControlName="difficulty" value="1" name="difficulty"/>
+            <label for="complexity1">1 уровень</label>
+            <input id="complexity2" type="radio" formControlName="difficulty" value="2" name="difficulty" />
+            <label for="complexity2">2 уровень</label>
+            <input id="complexity3" type="radio" formControlName="difficulty" value="3" name="difficulty" />
+            <label for="complexity3">3 уровень</label>
+            <input id="complexity4" type="radio" formControlName="difficulty" value="4" name="difficulty" />
+            <label for="complexity4">4 уровень</label>
+            <input id="complexity5" type="radio" formControlName="difficulty" value="5" name="difficulty" />
+            <label for="complexity5">5 уровень</label>
+          </div>
+
+          <div class="container" *ngIf="currentStep === 4">
+            <header>Тип ответов</header>
+            <div class="radio-group" (change)="onQuestionTypeChange($event)">
+              <input id="typeSingle" type="radio" formControlName="answersType" value="single" name="answersType" />
+              <label for="typeSingle">Вариант</label>
+              <input id="typeMultiple" type="radio" formControlName="answersType" value="multiple" name="answersType" />
+              <label for="typeMultiple">Варианты</label>
+              <input id="typeMatch" type="radio" formControlName="answersType" value="match" name="answersType" />
+              <label for="typeMatch">Соответствия</label>
+              <input id="typeOpen" type="radio" formControlName="answersType" value="open" name="answersType" />
+              <label for="typeOpen">Открытый</label>
+            </div>
+          </div>
+
+          <div class="container" *ngIf="currentStep === 5">
+            <header>Практ./Теор.</header>
+            <input id="practical" type="radio" formControlName="questionType" value="practical" name="questionType" />
+            <label for="practical">Практический</label>
+            <input id="theoretical" type="radio" formControlName="questionType" value="theoretical" name="questionType" />
+            <label for="theoretical">Теоретический</label>
+          </div>
+
+          <div class="container" *ngIf="currentStep === 6">
+            <label for="theme" class="label">Тема вопроса</label>
+            <tui-input id="theme" class="input" formControlName="theme" placeholder="Введите тему вопроса" aria-label="Введите тему вопроса" />
+          </div>
+
+          <div class="container"  *ngIf="currentStep === 7">
+            <header>Ответы</header>
+            <ng-container [ngSwitch]="questionType">
+              <app-single-choice *ngSwitchCase="'single'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-single-choice>
+              <app-multiple-choice *ngSwitchCase="'multiple'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-multiple-choice>
+              <app-match *ngSwitchCase="'match'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-match>
+              <app-open *ngSwitchCase="'open'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-open>
+            </ng-container>
+          </div>
+
+        </form>
+
+      </div>
+    </tui-scrollbar>
+
+    <div class="bottom-container">
+      <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
+      <button type="button" tuiButton (click)="prevStep()" [disabled]="currentStep === 0">Назад</button>
+      <button type="button" tuiButton (click)="nextStep()" [disabled]="currentStep === 7 || !form.valid">Далее</button>
+      <button type="submit" tuiButton *ngIf="currentStep === 7" [disabled]="!form.valid" (click)="onSubmit()">Изменить</button>
     </div>
+
+<!--    <div class="main-container">-->
+<!--      <header class="header">-->
+<!--        Изменение вопроса-->
+<!--      </header>-->
+<!--      <nav class="steps">-->
+<!--        <div class="step"><span class="step-number">1</span>Название</div>-->
+<!--        <div class="step"><span class="step-number">2</span>Постановка</div>-->
+<!--        <div class="step"><span class="step-number">3</span>Баллы</div>-->
+<!--        <div class="step"><span class="step-number">4</span>Сложность</div>-->
+<!--        <div class="step"><span class="step-number">5</span>Тип</div>-->
+<!--        <div class="step"><span class="step-number">6</span>Практ./Теор.</div>-->
+<!--        <div class="step"><span class="step-number">7</span>Ответы</div>-->
+<!--      </nav>-->
+<!--      <form [formGroup]="form" (ngSubmit)="onSubmit()">-->
+
+<!--        <div class="main-container">-->
+<!--          <label for="questionTitle" class="label">Название вопроса</label>-->
+<!--          <tui-input id="questionTitle" class="input" formControlName="questionTitle" placeholder="Введите название" aria-label="Введите название вопроса" />-->
+<!--        </div>-->
+
+<!--        <div class="main-container">-->
+<!--          <label for="questionDescription" class="label">Постановка вопроса</label>-->
+<!--          <tui-textarea id="questionDescription" class="input" formControlName="questionDescription" placeholder="Введите постановку вопроса" aria-label="Введите постановку вопроса" />-->
+<!--        </div>-->
+
+<!--        <div class="main-container">-->
+<!--          <label for="questionPoints" class="label">Количество баллов</label>-->
+<!--          <input id="questionPoints" class="input" formControlName="questionPoints" type="number" placeholder="Введите баллы" aria-label="Введите баллы" />-->
+<!--        </div>-->
+
+<!--        <header>Уровень сложности</header>-->
+<!--        <input id="complexity1" type="radio" formControlName="difficulty" [value]="1" name="difficulty" />-->
+<!--        <label for="complexity1">1 уровень</label>-->
+<!--        <input id="complexity2" type="radio" formControlName="difficulty" [value]="2" name="difficulty" />-->
+<!--        <label for="complexity2">2 уровень</label>-->
+<!--        <input id="complexity3" type="radio" formControlName="difficulty" [value]="3" name="difficulty" />-->
+<!--        <label for="complexity3">3 уровень</label>-->
+<!--        <input id="complexity4" type="radio" formControlName="difficulty" [value]="4" name="difficulty" />-->
+<!--        <label for="complexity4">4 уровень</label>-->
+
+<!--        <header>Тип ответов</header>-->
+<!--        <div class="radio-group" (change)="onQuestionTypeChange($event)">-->
+<!--          <input id="typeSingle" type="radio" formControlName="answersType" value="single" name="answersType" />-->
+<!--          <label for="typeSingle">Вариант</label>-->
+<!--          <input id="typeMultiple" type="radio" formControlName="answersType" value="multiple" name="answersType" />-->
+<!--          <label for="typeMultiple">Варианты</label>-->
+<!--          <input id="typeMatch" type="radio" formControlName="answersType" value="match" name="answersType" />-->
+<!--          <label for="typeMatch">Соответствия</label>-->
+<!--          <input id="typeOpen" type="radio" formControlName="answersType" value="open" name="answersType" />-->
+<!--          <label for="typeOpen">Открытый</label>-->
+<!--        </div>-->
+
+<!--        <div class="container">-->
+<!--          <label for="theme" class="label">Тема вопроса</label>-->
+<!--          <input id="theme" class="input" formControlName="theme" type="text" placeholder="Введите тему вопроса" aria-label="Введите тему вопроса" />-->
+<!--        </div>-->
+
+
+<!--        <header>Практ./Теор.</header>-->
+<!--        <input id="practical" type="radio" formControlName="questionType" value="practical" name="questionType" />-->
+<!--        <label for="practical">Практический</label>-->
+<!--        <input id="theoretical" type="radio" formControlName="questionType" value="theoretical" name="questionType" />-->
+<!--        <label for="theoretical">Теоретический</label>-->
+
+<!--        <div class="form-group answers">-->
+<!--          <header>Ответы</header>-->
+<!--          <ng-container [ngSwitch]="questionType">-->
+<!--            <app-single-choice *ngSwitchCase="'single'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-single-choice>-->
+<!--            <app-multiple-choice *ngSwitchCase="'multiple'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-multiple-choice>-->
+<!--            <app-match *ngSwitchCase="'match'" [answers]="answers" (formChange)="onAnswersFormChange($event)"></app-match>-->
+<!--            <app-open *ngSwitchCase="'open'" [answers]="answers"  (formChange)="onAnswersFormChange($event)"></app-open>-->
+<!--          </ng-container>-->
+
+<!--        </div>-->
+<!--        <div class="form-actions">-->
+<!--          <div class="two-column-container">-->
+<!--            <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>-->
+<!--            <button type="button" tuiButton (click)="onSubmit()">Изменить</button>-->
+<!--          </div>-->
+
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+
   </div>
+
 </div>
 

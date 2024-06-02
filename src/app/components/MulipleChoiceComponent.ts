@@ -2,6 +2,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import {Answer} from "../models/answer";
+import {MathJaxService} from "../service/MathJaxService";
 
 @Component({
   selector: 'app-multiple-choice',
@@ -9,10 +10,17 @@ import {Answer} from "../models/answer";
     <div [formGroup]="form">
       <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
         <div [formGroupName]="i">
-          <input formControlName="text" type="text" placeholder="Введите вариант ответа" />
-          <input formControlName="isCorrect" type="checkbox" /> Правильный
-          <input formControlName="image" type="file" />
-          <button type="button" (click)="removeChoice(i)">Удалить</button>
+            <input formControlName="isFormula" type="checkbox" (change)="toggleFormula(choice)" /> Формула
+            <div *ngIf="choice.get('isFormula')?.value; else textInput">
+                <tui-input formControlName="text" placeholder="Введите формулу" (input)="renderMath()" />
+                <h3 [innerHTML]="choice.get('text')?.value | mathjax"></h3>
+            </div>
+            <ng-template #textInput>
+                <tui-input formControlName="text" placeholder="Введите вариант ответа" />
+            </ng-template>
+            <input formControlName="isCorrect" type="checkbox" />Правильный
+            <input formControlName="image" type="file" />
+            <button type="button" (click)="removeChoice(i)">Удалить</button>
         </div>
       </div>
       <button type="button" (click)="addChoice()">Добавить вариант</button>
@@ -20,13 +28,13 @@ import {Answer} from "../models/answer";
   `,
 })
 export class MultipleChoiceComponent implements OnInit, OnChanges {
-  @Input() data: any;
+  @Input() questionId: number | null = null;
   @Input() answers: Answer[] = [];
   @Output() formChange = new EventEmitter<FormGroup>();
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private mathJaxService: MathJaxService) {
     this.form = this.fb.group({
       choices: this.fb.array([]),
     });
@@ -43,6 +51,7 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
       text: '',
       isCorrect: false,
       image: null,
+      isFormula: false,
     }));
   }
 
@@ -50,6 +59,15 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
     this.choices.removeAt(index);
   }
 
+  toggleFormula(choice: any) {
+    if (!choice.get('isFormula').value) {
+      choice.patchValue({ formula: '' });
+    }
+  }
+
+  renderMath() {
+    this.mathJaxService.renderMathJax();
+  }
 
   ngOnInit(): void {
     console.log(this.answers);
@@ -70,6 +88,7 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
           text: answer.answerText,
           isCorrect: answer.isCorrect,
           image: answer.answerImg,
+          isFormula: answer.isFormula
         }));
       })
     }

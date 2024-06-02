@@ -1,22 +1,27 @@
 <div class="wrapper">
-<h1 class="tui-text_h3 title">
-  Test.IO
-</h1>
-<tui-tabs-with-more
-  class="tabs"
-  [activeItemIndex]="activeItemIndex"
->
-  <ng-container *ngFor="let tab of tabs">
-    <ng-container *ngIf="isString(tab);">
-      <button
-        *tuiItem
-        tuiTab
-        (click)="onClick(tab)"
-      >
-        {{ tab }}
-      </button>
+
+  <h1 class="tui-text_h3 title">
+    Test.IO
+  </h1>
+
+  <tui-tabs-with-more
+    class="tabs"
+    [activeItemIndex]="activeItemIndex">
+
+    <ng-container *ngFor="let tab of tabs">
+
+      <ng-container *ngIf="isString(tab);">
+        <button
+          *tuiItem
+          tuiTab
+          (click)="onClick(tab)">
+          {{ tab }}
+        </button>
+      </ng-container>
+
     </ng-container>
-  </ng-container>
-</tui-tabs-with-more>
+
+  </tui-tabs-with-more>
+
 </div>
 <ng-template #dynamic></ng-template>

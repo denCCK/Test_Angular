@@ -10,7 +10,8 @@ export class Testsession {
   testId: number;
   creationDate: Date;
   lastChangeDate: Date;
-  grade: Grade[];
+  questionsCount: number;
+  testsessionTime: Date;
 
   constructor(
     id: number,
@@ -21,7 +22,8 @@ export class Testsession {
     testId: number,
     creationDate: Date,
     lastChangeDate: Date,
-    grades: Grade[]
+    questionCount: number,
+    testsessionTime: Date,
   ) {
     this.id = id;
     this.testsessionName = testsessionName;
@@ -31,7 +33,8 @@ export class Testsession {
     this.testId = testId;
     this.creationDate = creationDate;
     this.lastChangeDate = lastChangeDate;
-    this.grade = grades;
+    this.questionsCount = questionCount;
+    this.testsessionTime = testsessionTime;
   }
 }
 

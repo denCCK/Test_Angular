@@ -32,7 +32,10 @@
     "@taiga-ui/kit": "^3.58.0",
     "@taiga-ui/layout": "^3.58.0",
     "@tinkoff/ng-dompurify": "3.0.0",
+    "chart.js": "^4.4.3",
     "dompurify": "2.2.9",
+    "mathjax": "^3.2.2",
+    "ng2-charts": "^6.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

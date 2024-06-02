@@ -11,7 +11,7 @@
         <input id="password" class="input" type="password" aria-label="Пароль" placeholder="1156"/>
       </div>
     </form>
-    <button tuiButton class="button" type="submit" routerLink="main">Войти</button>
+    <button tuiButton class="button" type="submit" (click)="onSubmit()">Войти</button>
   </div>
 </div>
 <div *ngIf="loginError" class="error-message">

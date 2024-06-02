@@ -54,12 +54,6 @@ export class TestsAddOverlayComponent implements OnInit{
             questions: this.selectedQuestions
           };
 
-          const now = new Date();
-          const isoString = now.toISOString();
-          const isoStringWithoutSeconds = isoString.substring(0, 16);
-          newTest.creationDate = new Date(isoStringWithoutSeconds);
-          newTest.lastChangeDate = new Date(isoStringWithoutSeconds);
-
           this.testService.createTest(newTest).subscribe(
             (test: Test) => {
               this.close.emit();

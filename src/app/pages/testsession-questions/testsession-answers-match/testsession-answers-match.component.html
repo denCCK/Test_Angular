@@ -1,0 +1,38 @@
+<tui-loader
+  class="loader"
+  [inheritColor]="true"
+  [overlay]="true"
+  [showLoader]="loading">
+  <div [formGroup]="form">
+    <div formArrayName="matches" *ngFor="let match of matches.controls; let i = index">
+      <div [formGroupName]="i">
+
+        <div *ngIf="match.get('isFormula')?.value; else textInput">
+          <div [innerHTML]="match.get('text')?.value | mathjax"></div>
+        </div>
+        <ng-template #textInput>
+          <div>{{ match.get('text')?.value }}</div>
+        </ng-template>
+
+        <div *ngIf="match.get('isMatchFormula')?.value; else matchTextInput">
+          <select formControlName="matchText" aria-label="Выберите соответствие">
+            <option *ngFor="let answerMatch of answerMatches"  [value]="answerMatch">
+              <div [innerHTML]="match.get('matchText')?.value | mathjax"></div>
+            </option>
+          </select>
+        </div>
+        <ng-template #matchTextInput>
+          <select formControlName="matchText" aria-label="Выберите соответствие">
+            <option *ngFor="let answerMatch of answerMatches"  [value]="answerMatch">{{ answerMatch }}</option>
+          </select>
+        </ng-template>
+
+<!--        <input formControlName="text" type="text" [disabled]="true"/>-->
+<!--        <select formControlName="matchText" aria-label="Выберите соответствие">-->
+<!--          <option *ngFor="let answerMatch of answerMatches"  [value]="answerMatch">{{ answerMatch }}</option>-->
+<!--        </select>-->
+
+      </div>
+    </div>
+  </div>
+</tui-loader>

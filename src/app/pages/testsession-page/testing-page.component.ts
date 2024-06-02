@@ -6,6 +6,8 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {Answer} from "../../models/answer";
 import {TestsessionService} from "../../service/TestsessionService";
 import {Testsession} from "../../models/testsession";
+import {Test} from "../../models/test";
+import {TestService} from "../../service/TestService";
 
 @Component({
   selector: "testing-page",
@@ -14,12 +16,28 @@ import {Testsession} from "../../models/testsession";
 })
 export class TestingPageComponent implements OnInit, OnChanges {
   testsessions!: Testsession[];
-  selectedTestsessionId: number | null = null;
+  testsession!: Testsession;
+  tests!: Test[];
+
   isAddOverlayVisible = false;
   isEditOverlayVisible = false;
   isViewOverlayVisible = false;
 
-  constructor(private testsessionService: TestsessionService) { }
+  getTestsessionStatus(testsession: Testsession): string {
+    const now = new Date();
+    const startDate = new Date(testsession.startDate);
+    const endDate = new Date(testsession.endDate);
+
+    if (now < startDate) {
+      return 'Ожидается';
+    } else if (now > endDate) {
+      return 'Завершено';
+    } else {
+      return 'Активно';
+    }
+  }
+
+  constructor(private testsessionService: TestsessionService, private testService: TestService) { }
 
   items = ['Наименование', 'Активно', 'Окончено', 'Ожидается'];
 
@@ -42,14 +60,21 @@ export class TestingPageComponent implements OnInit, OnChanges {
     }
   }
 
-
   ngOnInit(): void {
     this.loadTestsession();
+    this.loadTests();
   }
 
   loadTestsession() {
-    this.testsessionService.getAllTestsessions().subscribe(testsession => {
-      this.testsessions = testsession;
+    this.testsessionService.getAllTestsessions().subscribe(testsessions => {
+      this.testsessions = testsessions;
+      console.log(testsessions);
+    });
+  }
+
+  loadTests() {
+    this.testService.getAllTests().subscribe(tests => {
+      this.tests = tests;
     });
   }
 
@@ -57,14 +82,16 @@ export class TestingPageComponent implements OnInit, OnChanges {
     this.isAddOverlayVisible = true;
   }
 
-  showEditOverlay(testsessionId: number) {
+  showEditOverlay(testsession: Testsession, tests: Test[]) {
     this.isEditOverlayVisible = true;
-    this.selectedTestsessionId = testsessionId;
+    this.testsession = testsession;
+    this.tests = tests;
   }
 
-  showViewOverlay(testsessionId: number) {
+  showViewOverlay(testsession: Testsession) {
     this.isViewOverlayVisible = true;
-    this.selectedTestsessionId = testsessionId;
+    this.testsession = testsession;
+    console.log(this.testsession);
   }
 
   hideAddOverlay() {

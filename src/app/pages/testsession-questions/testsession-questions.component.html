@@ -1,0 +1,70 @@
+<div *ngIf="loading">
+  <p>Loading questions...</p>
+</div>
+
+<div *ngIf="!loading">
+
+  <div class="wrapper">
+
+    <h1 class="tui-text_h3 title">
+      {{testsession.testsessionName}}
+    </h1>
+
+    <h1 class="tui-text_h3 title">
+      {{this.name}} {{this.surname}}
+    </h1>
+
+  </div>
+
+  <div class="container">
+
+    <div class="image-wrapper">
+
+      <h3 *ngIf="timerRunning">
+        Оставшееся время: {{ formatTime(remainingTime) }}
+      </h3>
+
+      <div class="test-session-container">
+        <!-- Заготовка для таймера -->
+        <!-- Список вопросов -->
+        <div class="questions-list">
+          <h2>Вопросы</h2>
+          <tui-scrollbar>
+            <ul>
+              <li *ngFor="let question of questions; let i = index" (click)="selectQuestion(i)" [class.selected]="i === currentQuestionIndex">
+                Вопрос №{{i + 1}}
+              </li>
+            </ul>
+          </tui-scrollbar>
+        </div>
+
+        <!-- Текущий вопрос -->
+        <div class="current-question">
+          <h2>Вопрос {{currentQuestionIndex + 1}}</h2>
+          <p>{{currentQuestion.questionDescription}}</p>
+
+          <div class="form-group answers">
+            <header>Ответы</header>
+            <ng-container [ngSwitch]="currentQuestion.answersType">
+              <app-testsession-answers-single *ngSwitchCase="'single'" [answers]="currentAnswers" [userAnswers]="currentUserAnswers" (formChange)="onAnswersFormChange($event)"></app-testsession-answers-single>
+              <app-testsession-answers-multiple *ngSwitchCase="'multiple'" [answers]="currentAnswers" [userAnswers]="currentUserAnswers" (formChange)="onAnswersFormChange($event)"></app-testsession-answers-multiple>
+              <app-testsession-answers-match *ngSwitchCase="'match'" [answers]="currentAnswers" [userAnswers]="currentUserAnswers" (formChange)="onAnswersFormChange($event)"></app-testsession-answers-match>
+              <app-testsession-answers-open *ngSwitchCase="'open'" [answers]="currentAnswers" [userAnswers]="currentUserAnswers" (formChange)="onAnswersFormChange($event)"></app-testsession-answers-open>
+            </ng-container>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="bottom-container">
+      <button tuiButton (click)="endTestsession()">Завершить</button>
+    </div>
+
+  </div>
+
+</div>
+
+

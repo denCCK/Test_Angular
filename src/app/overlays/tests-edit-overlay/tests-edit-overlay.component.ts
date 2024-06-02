@@ -22,6 +22,7 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
   @Input() testId!: number;
   @Output() close = new EventEmitter<void>();
   selectedQuestions!: Question[];
+  loading: boolean = true;
 
   ngOnInit(): void {
     this.loadTest(this.testId);
@@ -53,6 +54,7 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
   }
 
   loadTest(testId: number): void {
+    this.loading = true;
     this.testService.getTestById(testId).subscribe(
       (test: Test) => {
         this.form.patchValue({
@@ -64,6 +66,7 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
         this.selectedQuestions = test.questions;
         this.creationDate = test.creationDate;
         console.log(this.selectedQuestions);
+        this.loading = false;
       },
       error => {
         console.error('Error fetching test:', error);
@@ -86,10 +89,10 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
             questions: this.selectedQuestions
           };
 
-          const now = new Date();
-          const isoString = now.toISOString();
-          const isoStringWithoutSeconds = isoString.substring(0, 16);
-          newTest.lastChangeDate = new Date(isoStringWithoutSeconds);
+          // const now = new Date();
+          // const isoString = now.toISOString();
+          // const isoStringWithoutSeconds = isoString.substring(0, 16);
+          // newTest.lastChangeDate = new Date(isoStringWithoutSeconds);
 
           this.testService.updateTest(this.testId, newTest).subscribe(
             (test: Test) => {
@@ -121,6 +124,7 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
   }
 
   closeOverlay() {
+    this.loadTest(this.testId);
     this.close.emit();
   }
 }

@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="image-wrapper" >
+    <h2 class="title">Введите имя и фамилию для начала теста</h2>
+    <form class="form-container">
+      <div class="input-group">
+        <label for="name" class="label">Имя</label>
+        <input class="input" type="text" id="name" [(ngModel)]="name" name="name" required/>
+      </div>
+      <div class="input-group">
+        <label for="surname" class="label">Фамилия</label>
+        <input class="input" type="text" id="surname" [(ngModel)]="surname" name="surname" required/>
+      </div>
+    </form>
+    <button tuiButton class="button" (click)="startTest()">Начать тест</button>
+  </div>
+</div>
+

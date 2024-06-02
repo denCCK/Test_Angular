@@ -40,14 +40,14 @@
       <tbody>
       <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let testsession of testsessions">
         <td class="tui-table__td tui-table__td_first">{{ testsession.testsessionName }}</td>
-        <td class="tui-table__td">{{ testsession.startDate }} - {{ testsession.endDate }}</td>
-        <td class="tui-table__td"></td>
-        <td class="tui-table__td">{{ testsession.creationDate | date }}</td>
-        <td class="tui-table__td">{{ testsession.lastChangeDate | date }}</td>
+        <td class="tui-table__td">{{ testsession.startDate | date:'medium' }} - {{ testsession.endDate | date:'medium' }}</td>
+        <td class="tui-table__td">{{ this.getTestsessionStatus(testsession) }}</td>
+        <td class="tui-table__td">{{ testsession.creationDate | date:'medium' }}</td>
+        <td class="tui-table__td">{{ testsession.lastChangeDate | date:'medium' }}</td>
         <td class="tui-table__td tui-table__td_last">
-          <div class="two-column-container">
-            <tui-svg (click)="showViewOverlay(testsession.id)" src="tuiIconShowLarge"></tui-svg>
-            <tui-svg (click)="showEditOverlay(testsession.id)" src="tuiIconEditLarge"></tui-svg>
+          <div class="three-column-container">
+            <tui-svg (click)="showViewOverlay(testsession)" src="tuiIconShowLarge"></tui-svg>
+            <tui-svg (click)="showEditOverlay(testsession, tests)" src="tuiIconEditLarge"></tui-svg>
             <tui-svg (click)="deleteTestsession(testsession.id)" src="tuiIconTrash2Large"></tui-svg>
           </div>
         </td>
@@ -71,11 +71,17 @@
 </div>
 
 <app-testsession-add-overlay
-  [isVisible]="isAddOverlayVisible" (close)="hideAddOverlay()">
+  [isVisible]="isAddOverlayVisible"
+  (close)="hideAddOverlay()">
 </app-testsession-add-overlay>
 
-<!--<app-testsession-add-overlay-->
-<!--  *ngIf="selectedTestsessionId !== null"-->
-<!--  [testsessionId]="selectedTestsessionId"-->
-<!--  [isVisible]="isEditOverlayVisible" (close)="hideEditOverlay()">-->
-<!--</app-testsession-add-overlay>-->
+<app-testsession-edit-overlay
+  [testsession]="testsession"
+  [tests]="tests"
+  [isVisible]="isEditOverlayVisible" (close)="hideEditOverlay()">
+</app-testsession-edit-overlay>
+
+<app-testsession-view-overlay
+  [testsession]="testsession"
+  [isVisible]="isViewOverlayVisible" (close)="hideViewOverlay()">
+</app-testsession-view-overlay>

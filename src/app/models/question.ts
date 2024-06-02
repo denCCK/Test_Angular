@@ -11,6 +11,7 @@ export class Question {
   answersType: string;
   difficulty: number;
   user: User;
+  theme: string;
 
   constructor(
     question_id: number,
@@ -23,6 +24,7 @@ export class Question {
     answers_type: string,
     difficulty: number,
     user: User,
+    theme: string,
   ) {
     this.id = question_id;
     this.questionName = question_name;
@@ -34,6 +36,7 @@ export class Question {
     this.answersType = answers_type;
     this.difficulty = difficulty;
     this.user = user;
+    this.theme = theme;
   }
 }
 

@@ -3,20 +3,28 @@ import {TestingPageComponent} from "../testsession-page/testing-page.component";
 import {tuiIsString} from "@taiga-ui/cdk";
 import {QuestionsPageComponent} from "../questions-page/questions-page.component";
 import {TestsPageComponent} from "../tests-page/tests-page.component";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'main-page',
   templateUrl: './main-page.component.html',
   styleUrls: ['./main-page.component.less']
 })
-export class MainPageComponent implements AfterViewInit{
+export class MainPageComponent implements AfterViewInit {
+  @ViewChild('dynamic', {read: ViewContainerRef})
+  dynamic!: ViewContainerRef;
+  form: FormGroup;
+
+  constructor() {
+    this.form = new FormGroup({
+    });
+  }
+
   ngAfterViewInit() {
     this.dynamic.clear();
     this.dynamic.createComponent(QuestionsPageComponent);
   }
 
-  @ViewChild('dynamic', {read: ViewContainerRef})
-  dynamic!: ViewContainerRef;
   readonly tabs = [
     'Вопросы',
     'Тесты',

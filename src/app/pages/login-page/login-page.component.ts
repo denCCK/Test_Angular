@@ -14,7 +14,8 @@ export class LoginPageComponent {
   constructor(private router: Router) {}
 
   onSubmit() {
-    if (this.username === 'a' && this.password === '1') {
+    if (this.username === '' && this.password === '') {
+      localStorage.setItem('authToken', 'your-auth-token');
       this.router.navigate(['main']);
     } else {
       this.loginError = true;

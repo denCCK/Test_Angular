@@ -1,0 +1,70 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.less';
+
+
+.wrapper {
+  .inset-border(bottom, bold);
+  display: flex;
+  align-items: center;
+  margin: 40px 40px 0 40px;
+  padding: 0 0 20px 0;
+}
+
+.content {
+  padding: 2rem 2rem 4rem;
+}
+
+.title {
+  min-width: 15.625rem;
+  margin: 0;
+}
+
+.tabs {
+  width: ~'calc(100% - 15.625rem)';
+  justify-content: flex-end;
+  box-shadow: none;
+}
+
+.test-session-container {
+  display: flex;
+  .timer {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .questions-list {
+    width: 25%;
+    margin-right: 20px;
+    ul {
+      list-style-type: none;
+      padding: 0;
+      li {
+        padding: 10px;
+        cursor: pointer;
+        &.selected {
+          background-color: #d3d3d3;
+        }
+      }
+    }
+  }
+  .current-question {
+    width: 75%;
+  }
+}
+
+.image-wrapper {
+  border-radius: 20px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+  background-color: var(--gray-colors-gray-7, #f3f4f6);
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 10px 20px;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  row-gap: 10px;
+  margin: 20px 40px 40px 40px;
+  height: 100%;
+}

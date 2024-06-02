@@ -12,13 +12,29 @@ import {Answer} from "../../models/answer";
   styleUrl: "./questions-page.component.less"
 })
 
-export class QuestionsPageComponent implements OnChanges{
-  questions!: Question[];
+export class QuestionsPageComponent implements OnInit, OnChanges{
+  questions: Question[] = [];
+  paginatedQuestions: Question[] = [];
   selectedQuestionId: number | null = null;
   isAddOverlayVisible = false;
   isEditOverlayVisible = false;
 
-  constructor(private questionService: QuestionService, private answerService: AnswerService) { }
+  items = ['Наименование', 'Сложность', 'Тип', 'Практ./Теор.', 'Дата создания', 'Дата последнего изменения'];
+  form: FormGroup;
+  length = 3;
+  index = 0;
+  totalPages = 0;
+
+  constructor(private questionService: QuestionService, private answerService: AnswerService) {
+    this.form = new FormGroup({
+      filters: new FormControl([]),
+      searchQuery: new FormControl()
+    });
+  }
+
+  ngOnInit() {
+    this.loadQuestions();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes["questions"] && changes["questions"].currentValue) {
@@ -26,31 +42,23 @@ export class QuestionsPageComponent implements OnChanges{
     }
   }
 
-
-  ngOnInit(): void {
-    this.loadQuestions();
-  }
-
   loadQuestions() {
-    //this.questions$ = this.questionService.getQuestions();
     this.questionService.getQuestions().subscribe(questions => {
       this.questions = questions;
+      this.totalPages = Math.ceil(this.questions.length / this.length);
+      this.paginateQuestions();
     });
   }
 
-  items = ['Наименование', 'Сложность', 'Тип', 'Практ./Теор.', 'Дата создания', 'Дата последнего изменения'];
-
-  form = new FormGroup({
-    filters: new FormControl([]),
-  });
-
-  length = 64;
-
-  index = 1;
+  paginateQuestions() {
+    const start = (this.index) * this.length;
+    const end = start + this.length;
+    this.paginatedQuestions = this.questions.slice(start, end);
+  }
 
   goToPage(index: number): void {
     this.index = index;
-    console.info('New page:', index);
+    this.paginateQuestions();
   }
 
   showAddOverlay() {
@@ -77,7 +85,6 @@ export class QuestionsPageComponent implements OnChanges{
       oldAnswers.forEach(answer => {
         this.answerService.deleteAnswer(answer.id).subscribe(() => {
           console.log('Old answer deleted successfully');
-
         }, error => {
           console.error('Error deleting old answer:', error);
         });

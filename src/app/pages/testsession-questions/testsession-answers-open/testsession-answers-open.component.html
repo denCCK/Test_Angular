@@ -1,0 +1,15 @@
+<tui-loader
+  class="loader"
+  [inheritColor]="true"
+  [overlay]="true"
+  [showLoader]="loading">
+  <div [formGroup]="form">
+    <div *ngIf="form.get('isFormula')?.value; else textInput">
+      <tui-input formControlName="formula" placeholder="Введите формулу" (input)="renderMath()" />
+      <h3 [innerHTML]="form.get('formula')?.value | mathjax"></h3>
+    </div>
+    <ng-template #textInput>
+      <tui-textarea formControlName="text" placeholder="Введите ответ" />
+    </ng-template>
+  </div>
+</tui-loader>

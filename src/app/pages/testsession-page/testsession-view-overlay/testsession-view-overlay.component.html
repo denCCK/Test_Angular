@@ -1,0 +1,168 @@
+<div class="overlay" *ngIf="isVisible">
+
+  <div class="overlay-content">
+
+    <div class="main-container">
+
+      <div class="container">
+        <h1 class="tui-text_h3 title">
+          Статистика тестирования
+        </h1>
+      </div>
+
+      <div class="container" *ngIf="link">
+        <h3>Ссылка для прохождения тестирования <a [href]="link" target="_blank">{{ link }}</a></h3>
+      </div>
+
+      <div class="container">
+        <table class="tui-table">
+          <tbody>
+          <tr>
+            <th class="tui-table__th tui-table__th_first">Имя</th>
+            <th class="tui-table__th">Фамилия</th>
+            <th class="tui-table__th">Оценка</th>
+            <th class="tui-table__th">Общий балл</th>
+            <th *ngFor="let question of questions" class="tui-table__th">{{ question.questionName }}</th>
+            <th class="tui-table__th tui-table__th_last">Просмотр</th>
+          </tr>
+          </tbody>
+          <tbody>
+          <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let testsessionResult of testsessionResults">
+            <td class="tui-table__td tui-table__td_first">{{ testsessionResult.testsessionResultName }}</td>
+            <td class="tui-table__td">{{ testsessionResult.testsessionResultSurname }}</td>
+            <td class="tui-table__td">{{ this.getUserGradeByKey(testsessionResult.id) }}</td>
+            <td class="tui-table__td">{{ testsessionResult.point }}</td>
+            <td *ngFor="let question of questions" [ngClass]="getResultClass(testsessionResult.id, question.id)">
+              {{ getQuestionPoint(testsessionResult.id, question.id) }}
+            </td>
+            <td class="tui-table__td tui-table__td_last">
+              <tui-svg (click)="showViewOverlay(testsessionResult.id)" src="tuiIconShowLarge"></tui-svg>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="container">
+        <tui-loader
+          class="loader"
+          [inheritColor]="true"
+          [overlay]="true"
+          [showLoader]="resultLoading">
+          <tui-axes
+            axisY="none"
+            class="axes"
+            [axisXLabels]="axisXLabels"
+            [axisYSecondaryLabels]="axisYSecondaryLabels"
+            [horizontalLines]="2"
+            [horizontalLinesHandler]="horizontalLinesHandler"
+            [verticalLines]="4"
+            [verticalLinesHandler]="verticalLinesHandler">
+            <tui-bar-chart
+              class="chart"
+              [max]="maxValue"
+              [tuiHintContent]="hint"
+              [value]="chartData">
+            </tui-bar-chart>
+          </tui-axes>
+
+          <ng-template
+            #hint
+            let-setIndex>
+            <p
+              *ngFor="let item of chartData; let index = index"
+              class="hint">
+                      <span
+                        class="dot"
+                        [style.background]="getBackground(index)">
+                      </span>
+              <span class="name">{{ getSetName(index) }} - {{ item[setIndex] }}</span>
+            </p>
+          </ng-template>
+        </tui-loader>
+      </div>
+
+      <div class="container">
+        <button type="button" tuiButton (click)="closeOverlay()">Закрыть</button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="overlay" *ngIf="isTestsessionResultOverlayVisible">
+
+  <div class="overlay-content">
+
+    <div class="main-container">
+
+      <div class="container">
+        <h1 class="tui-text_h3 title">
+          Вопросы и ответы
+        </h1>
+      </div>
+
+      <div class="container">
+        <h3>{{selectedTestsessionResult.testsessionResultName}} {{this.selectedTestsessionResult.testsessionResultSurname}}</h3>
+      </div>
+      <div class="container">
+        <h3>Время начала: {{this.selectedTestsessionResult.startDate | date:'medium'}}</h3>
+      </div>
+      <div class="container">
+        <h3>Время окончания: {{this.selectedTestsessionResult.endDate | date:'medium'}}</h3>
+      </div>
+      <div class="container">
+        <h3>Общий балл: {{this.selectedTestsessionResult.point}}</h3>
+      </div>
+
+      <div class="container">
+        <tui-scrollbar class="box">
+          <div class="question-list" >
+            <div *ngFor="let userResult of userResults">
+              <h3>{{ this.navigateToQuestion(userResult[0].questionId)?.questionName }} - {{userResult[0].isCorrect}} - {{userResult[0].point}}</h3>
+              <ul>
+                <ng-container [ngSwitch]="this.navigateToQuestion(userResult[0].questionId)?.answersType">
+                  <div *ngSwitchCase="'single'">
+                    <li  *ngFor="let answerResult of userResult[1]">
+                      {{ answerResult.answerText }} - {{answerResult.isCorrect}}
+                    </li>
+                  </div>
+                  <div *ngSwitchCase="'multiple'">
+                    <li  *ngFor="let answerResult of userResult[1]">
+                      {{ answerResult.answerText }} - {{answerResult.isCorrect}}
+                    </li>
+                  </div>
+                  <div *ngSwitchCase="'match'">
+                    <li  *ngFor="let answerResult of userResult[1]">
+                      {{ answerResult.answerText }} - {{answerResult.complianceText}}
+                    </li>
+                  </div>
+                  <div *ngSwitchCase="'open'">
+                    <li  *ngFor="let answerResult of userResult[1]">
+                      {{ answerResult.answerText }}
+                    </li>
+                  </div>
+                </ng-container>
+              </ul>
+            </div>
+          </div>
+        </tui-scrollbar>
+      </div>
+
+
+      <div class="form-actions">
+        <div class="bottom-container">
+          <button type="button" tuiButton (click)="hideViewOverlay()">Закрыть</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+

@@ -38,9 +38,9 @@
       <tbody>
       <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let test of tests">
         <td class="tui-table__td tui-table__td_first">{{ test.testName }}</td>
-        <td class="tui-table__td">{{ test.creationDate | date }}</td>
-        <td class="tui-table__td">{{ test.lastChangeDate | date }}</td>
-        <td class="tui-table__td"></td>
+        <td class="tui-table__td">{{ test.creationDate | date:'medium' }}</td>
+        <td class="tui-table__td">{{ test.lastChangeDate | date:'medium' }}</td>
+        <td class="tui-table__td">{{ test.questions.length }}</td>
         <td class="tui-table__td tui-table__td_last">
           <div class="two-column-container">
             <tui-svg (click)="showEditOverlay(test.id)" src="tuiIconEditLarge" ></tui-svg>
@@ -54,6 +54,7 @@
   </div>
   <div class="bottom-container">
     <button tuiButton (click)="showAddOverlay()">Добавить тест</button>
+    <button tuiButton (click)="showGenOverlay()">Подобрать тест</button>
     <button tuiButton (click)="loadTets()">Обновить</button>
     <div class="pagination-container">
       <tui-pagination
@@ -75,3 +76,7 @@
   [testId]="selectedTestId"
   (close)="hideEditOverlay()">
 </app-tests-edit-overlay>
+
+<app-test-gen-overlay
+  [isVisible]="isGenOverlayVisible" (close)="hideGenOverlay()">
+</app-test-gen-overlay>

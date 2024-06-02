@@ -18,6 +18,8 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
   questionType!: string;
   answers!: Answer[];
   creationDate!: Date;
+  currentStep: number = 0;
+  steps = ['Название', 'Постановка', 'Баллы', 'Сложность', 'Тип', 'Практ./Теор.', 'Тема', 'Ответы'];
 
   @Input() isVisible: boolean = false;
   @Input() questionId: number | null = null;
@@ -31,9 +33,56 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
       difficulty: new FormControl(),
       answersType: new FormControl(),
       questionType: new FormControl(),
+      theme: new FormControl()
     });
     if (this.questionId != null) {
 
+    }
+  }
+
+  canNavigateToStep(step: number): boolean {
+    if (step <= this.currentStep) {
+      return true;
+    }
+    return false;
+  }
+
+  setStep(index: number): void {
+    this.currentStep = index;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 7 && this.isStepValid(this.currentStep)) {
+      this.currentStep++;
+    }
+  }
+
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 0:
+        return this.form.controls['questionTitle'].valid;
+      case 1:
+        return this.form.controls['questionDescription'].valid;
+      case 2:
+        return this.form.controls['questionPoints'].valid;
+      case 3:
+        return this.form.controls['difficulty'].valid;
+      case 4:
+        return this.form.controls['answersType'].valid;
+      case 5:
+        return this.form.controls['questionType'].valid;
+      case 6:
+        return this.form.controls['theme'].valid;
+      case 7:
+        return this.form.controls['answers'].valid;
+      default:
+        return false;
     }
   }
 
@@ -58,10 +107,11 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
         questionTitle: question.questionName,
         questionDescription: question.questionDescription,
         questionPoints: question.questionPoint,
-        difficulty: question.difficulty,
+        difficulty: `${question.difficulty}`,
         answersType: question.answersType,
         questionType: question.questionType,
-        creationDate: question.creationDate
+        creationDate: question.creationDate,
+        theme: question.theme
       });
       this.answerService.getAnswersByQuestionId(questionId).subscribe(
         (answers: Answer[]) => {
@@ -92,7 +142,8 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
             questionType: formData.questionType,
             answersType: formData.answersType,
             difficulty: formData.difficulty,
-            user: user
+            user: user,
+            theme: formData.theme
           };
           const now = new Date();
           const isoString = now.toISOString();
@@ -108,43 +159,25 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
                   oldAnswers.forEach(answer => {
                     this.answerService.deleteAnswer(answer.id).subscribe(() => {
                       console.log('Old answer deleted successfully');
-                      const answers: Answer[] = this.extractAnswersFromFormData(formData, questionResponse);
-                      answers.forEach(answer => {
-                        this.answerService.createAnswer(answer).subscribe(
-                          (answerResponse: Answer) => {
-                            console.log('Answer created successfully:', answerResponse);
-                            //if (this.questionId != null) this.questionId += 1;
-                            console.log(this.questionId);
-                            this.close.emit();
-                          },
-                          error => {
-                            console.error('Error creating answer:', error);
-                          }
-                        );
-                      });
-                    }, error => {
-                      console.error('Error deleting old answer:', error);
                     });
                   });
-                }, error => {
-                  console.error('Error getting old answers:', error);
                 });
 
+                const answers: Answer[] = this.extractAnswersFromFormData(formData, questionResponse);
+                console.log(answers);
+                answers.forEach(answer => {
+                  this.answerService.createAnswer(answer).subscribe(
+                    (answerResponse: Answer) => {
+                      console.log('Answer created successfully:', answerResponse);
+                      this.close.emit();
+                    });
+                });
+                this.answers = answers;
 
-
-
-              },
-              error => {
-                console.error('Error creating question:', error);
-              }
-            );
+              });
           }
 
-        },
-        error => {
-          console.error('Error fetching user:', error);
-        }
-      );
+        });
 
     }
   }
@@ -160,23 +193,36 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
           answerText: answerData.text,
           answerImg: answerData.image,
           isCorrect: answerData.isCorrect,
+          isFormula: answerData.isFormula,
           complianceText: answerData.matchText,
           complianceImg: answerData.matchImage,
-          question: question
+          isComplianceFormula: answerData.isComplianceFormula,
+          question: question,
+          answerFormula: answerData.answerFormula
         };
         answers.push(answer);
       }
     } else if (formData.answers.choices != null) {
       for (let i = 0; i < formData.answers.choices.length; i++) {
         const answerData = formData.answers.choices[i];
+        if (question.answersType == 'single') {
+          if (formData.answers.selectedChoice == i) {
+            answerData.isCorrect = true;
+          } else {
+            answerData.isCorrect = false;
+          }
+        }
         const answer: Answer = {
           id: 0,
           answerText: answerData.text,
           answerImg: answerData.image,
           isCorrect: answerData.isCorrect,
+          isFormula: answerData.isFormula,
           complianceText: answerData.matchText,
           complianceImg: answerData.matchImage,
-          question: question
+          isComplianceFormula: answerData.isComplianceFormula,
+          question: question,
+          answerFormula: answerData.answerFormula
         };
         answers.push(answer);
       }
@@ -187,9 +233,12 @@ export class QuestionsEditOverlayComponent implements OnInit, OnChanges {
         answerText: formData.answers.text,
         answerImg: answerData.image,
         isCorrect: answerData.isCorrect,
+        isFormula: answerData.isFormula,
         complianceText: answerData.matchText,
         complianceImg: answerData.matchImage,
-        question: question
+        isComplianceFormula: answerData.isComplianceFormula,
+        question: question,
+        answerFormula: answerData.answerFormula
       };
       answers.push(answer);
     }

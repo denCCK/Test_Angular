@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Question} from "../../models/question";
 
 @Component({
@@ -6,26 +6,35 @@ import {Question} from "../../models/question";
   templateUrl: './question-selector.component.html',
   styleUrl: './question-selector.component.css'
 })
-export class QuestionSelectorComponent {
+export class QuestionSelectorComponent implements OnInit, OnChanges {
   @Input() questions: Question[] = [];
+  @Input() selectedQuestions: Question[] = [];
   @Output() questionsSelected = new EventEmitter<Question[]>();
 
-  selectedQuestions: Question[] = [];
+  currentSelectedQuestions: Question[] = [];
   checked: boolean = false;
 
-  toggleQuestionSelection(question: Question): void {
-    console.log(this.selectedQuestions.toString())
-    if (!this.selectedQuestions.includes(question)) {
-      this.selectedQuestions.push(question);
+  ngOnInit():void {
+    if (this.selectedQuestions) {
+      this.currentSelectedQuestions = this.selectedQuestions;
     }
-    this.questionsSelected.emit(this.selectedQuestions);
+  }
 
-    // if (!this.selectedQuestions.includes(question)) {
-    //   const index = this.selectedQuestions.findIndex(q => q.id === question.id);
-    //   if (index !== -1) {
-    //     this.selectedQuestions.splice(index, 1);
-    //   }
-    // }
-    //this.questionsSelected.emit(this.selectedQuestions);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedQuestions'] && changes['selectedQuestions'].currentValue !== changes['selectedQuestions'].previousValue) {
+      if (this.selectedQuestions) {
+        this.currentSelectedQuestions = this.selectedQuestions;
+        console.log(this.currentSelectedQuestions);
+      }
+    }
+  }
+
+  toggleQuestionSelection(question: Question): void {
+
+    if (!this.currentSelectedQuestions.includes(question)) {
+      this.currentSelectedQuestions.push(question);
+    }
+    this.questionsSelected.emit(this.currentSelectedQuestions);
+
   }
 }

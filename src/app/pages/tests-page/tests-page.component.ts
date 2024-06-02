@@ -13,6 +13,7 @@ export class TestsPageComponent {
   selectedTestId: number | null = null;
   isAddOverlayVisible = false;
   isEditOverlayVisible = false;
+  isGenOverlayVisible = false;
 
   constructor(private testService: TestService) { }
 
@@ -45,7 +46,7 @@ export class TestsPageComponent {
   }
 
   loadTets() {
-    this.testService.getTests().subscribe(tests => {
+    this.testService.getAllTests().subscribe(tests => {
       this.tests = tests;
     });
   }
@@ -66,6 +67,15 @@ export class TestsPageComponent {
 
   hideEditOverlay() {
     this.isEditOverlayVisible = false;
+    this.loadTets();
+  }
+
+  showGenOverlay() {
+    this.isGenOverlayVisible = true;
+  }
+
+  hideGenOverlay() {
+    this.isGenOverlayVisible = false;
     this.loadTets();
   }
 }

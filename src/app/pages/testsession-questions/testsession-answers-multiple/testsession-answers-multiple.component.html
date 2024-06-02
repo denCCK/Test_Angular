@@ -1,0 +1,19 @@
+
+<tui-loader
+  class="loader"
+  [inheritColor]="true"
+  [overlay]="true"
+  [showLoader]="loading">
+  <div [formGroup]="form">
+    <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
+      <div [formGroupName]="i">
+        <div *ngIf="choice.get('isFormula')?.value; else textInput">
+          <div [innerHTML]="choice.get('text')?.value | mathjax"><input formControlName="isCorrect" type="checkbox" /></div>
+        </div>
+        <ng-template #textInput>
+          <div>{{ choice.get('text')?.value }}<input formControlName="isCorrect" type="checkbox" /></div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</tui-loader>
