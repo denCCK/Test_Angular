@@ -22,7 +22,6 @@ import {MathJaxService} from "../service/MathJaxService";
                       <ng-template #textInput>
                           <tui-input formControlName="text" placeholder="Введите вариант ответа" />
                       </ng-template>
-                      <input formControlName="image" type="file" />
                       <button type="button" (click)="removeChoice(i)">Удалить</button>
                   </div>
               </div>

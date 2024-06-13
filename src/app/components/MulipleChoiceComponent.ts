@@ -28,7 +28,6 @@ import {MathJaxService} from "../service/MathJaxService";
                 <tui-input formControlName="text" placeholder="Введите вариант ответа" />
             </ng-template>
             <input formControlName="isCorrect" type="checkbox" />Правильный
-            <input formControlName="image" type="file" />
             <button type="button" (click)="removeChoice(i)">Удалить</button>
         </div>
       </div>
