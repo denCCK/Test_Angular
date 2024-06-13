@@ -113,6 +113,7 @@ export class TestingPageComponent implements OnInit, OnChanges {
 
   hideViewOverlay() {
     this.isViewOverlayVisible = false;
+    this.loadTestsession();
   }
 
   deleteTestsession(id: number) {

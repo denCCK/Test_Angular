@@ -17,6 +17,8 @@ import {GradeService} from "../../../service/GradeService";
 import {Grade} from "../../../models/grade";
 import {tuiCeil, tuiPure} from "@taiga-ui/cdk";
 import {Answer} from "../../../models/answer";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {MathJaxService} from "../../../service/MathJaxService";
 
 @Component({
   selector: 'app-testsession-view-overlay',
@@ -31,6 +33,7 @@ export class TestsessionViewOverlayComponent implements OnChanges {
 
   test!: Test;
   questions!: Question[];
+  answers: Answer[] = [];
 
   testsessionResults!: TestsessionResult[];
   testsessionQuestionResults!: TestsessionQuestionResult[];
@@ -76,6 +79,8 @@ export class TestsessionViewOverlayComponent implements OnChanges {
     private gradeService: GradeService,
     private answerService: AnswerService,
     private questionService: QuestionService,
+    private mathJaxService: MathJaxService,
+    private sanitizer: DomSanitizer
   ) { }
 
   calculateGrade(testsessionResultId: number): void {
@@ -204,6 +209,16 @@ export class TestsessionViewOverlayComponent implements OnChanges {
         finalize(() => {
           this.questions = this.test.questions;
           this.questions.forEach(question => {
+            this.answerService.getAnswersByQuestionId(question.id).pipe(
+              tap(answers => {
+                answers.forEach(answer =>{
+                  this.answers.push(answer);
+                });
+              }),
+              finalize(() => {
+                console.log(this.answers);
+              })
+            ).subscribe();
             this.axisXLabels.push(question.questionName);
             let right = 0;
             let wrong = 0;
@@ -322,5 +337,48 @@ export class TestsessionViewOverlayComponent implements OnChanges {
     } else {
       return '';
     }
+  }
+
+  renderMath(value: string | undefined): SafeHtml {
+    this.mathJaxService.renderMathJax();
+    return this.sanitizer.bypassSecurityTrustHtml(`\\(${value}\\)`);
+  }
+
+  getAnswerTypeName(answerType: string): string {
+    switch (answerType) {
+      case 'single':
+        return 'Одиночный';
+      case 'multiple':
+        return 'Множественный';
+      case 'match':
+        return 'Соответствие';
+      case 'open':
+        return 'Открытый';
+      default:
+        return '';
+    }
+  }
+
+  getQuestionTypeName(questionType: string): string {
+    switch (questionType) {
+      case 'practical':
+        return 'Практический';
+      case 'theoretical':
+        return 'Теоретический';
+      default:
+        return '';
+    }
+  }
+
+  getIsCorrectName(isCorrect: boolean | undefined): string {
+    if (isCorrect) return 'Верно'
+    return 'Неверно'
+  }
+
+  getAnswerById(id: number): Answer | undefined {
+    const answer = this.answers.find(
+      result => result.id === id
+    );
+    return answer;
   }
 }

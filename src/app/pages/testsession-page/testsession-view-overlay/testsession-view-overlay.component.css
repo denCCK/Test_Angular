@@ -51,6 +51,12 @@
   column-gap: 5px;
 }
 
+.answer-container {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+}
+
 .box {
   width: 200px;
   height: 200px;
@@ -127,8 +133,18 @@
 .box {
   width: auto;
   height: auto;
-
 }
+
+.result-box {
+  width: 50vh;
+  height: 50vh;
+}
+
+.description-box {
+  width: 30vh;
+  height: auto;
+}
+
 .main-box {
   width: 100vh;
   height: 50vh;
