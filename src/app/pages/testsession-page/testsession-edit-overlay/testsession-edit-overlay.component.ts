@@ -15,13 +15,17 @@ import {TuiDay, TuiTime} from "@taiga-ui/cdk";
 })
 export class TestsessionEditOverlayComponent implements OnChanges {
   form: FormGroup;
+  testId = 0;
+  totalPoints = 0;
+  currentStep: number = 0;
+  steps = ['Название', 'Описание', 'Дата начала/окончания', 'Набор', 'Оценки', 'Дополнительно'];
 
   @Input() isVisible: boolean = false;
   @Input() testsession!: Testsession;
   @Input() tests!: Test[];
   @Output() close = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private testsessionService: TestsessionService, private gradeService: GradeService) {
+  constructor(private fb: FormBuilder, private testService: TestService, private testsessionService: TestsessionService, private gradeService: GradeService) {
     this.form = this.fb.group({
       testsessionName: new FormControl(),
       testsessionDescription: new FormControl(),
@@ -32,6 +36,46 @@ export class TestsessionEditOverlayComponent implements OnChanges {
       questionsCount: new FormControl(),
       testsessionTime: new FormControl()
     });
+  }
+
+  canNavigateToStep(step: number): boolean {
+    if (step <= this.currentStep) {
+      return true;
+    }
+    return false;
+  }
+
+  setStep(index: number): void {
+    this.currentStep = index;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 7 && this.isStepValid(this.currentStep)) {
+      this.currentStep++;
+    }
+  }
+
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 0:
+        return this.form.controls['testsessionName'].valid;
+      case 1:
+        return this.form.controls['testsessionDescription'].valid;
+      case 2:
+        return this.form.controls['startDate'].valid && this.form.controls['endDate'].valid;
+      case 3:
+        return this.form.controls['test'].valid;
+      case 4:
+        return this.form.controls['grades'].valid;
+      default:
+        return true;
+    }
   }
 
   fromTuiTimeToDate(tuiTime: TuiTime): Date {
@@ -53,6 +97,16 @@ export class TestsessionEditOverlayComponent implements OnChanges {
     const tuiDay = new TuiDay(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
     const tuiTime = new TuiTime(parsedDate.getHours(), parsedDate.getMinutes(), parsedDate.getSeconds(), parsedDate.getMilliseconds());
     return [tuiDay, tuiTime];
+  }
+
+  calculateTotalPoints(): void {
+    this.totalPoints = 0;
+    this.testService.getTestById(this.form.value.test).subscribe(test => {
+      test.questions.forEach(question => {
+        this.totalPoints += question.questionPoint;
+      });
+      console.log(this.totalPoints);
+    });
   }
 
   get grades(): FormArray {
@@ -95,6 +149,8 @@ export class TestsessionEditOverlayComponent implements OnChanges {
         testsessionTime: this.testsession.testsessionTime
       })
     }
+
+    this.calculateTotalPoints();
 
     this.gradeService.getGradesByTestsessionId(this.testsession.id).subscribe(grades => {
       grades.forEach(grad => {

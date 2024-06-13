@@ -16,6 +16,7 @@ import {TUI_ALWAYS_DASHED, TUI_ALWAYS_NONE} from "@taiga-ui/addon-charts";
 import {GradeService} from "../../../service/GradeService";
 import {Grade} from "../../../models/grade";
 import {tuiCeil, tuiPure} from "@taiga-ui/cdk";
+import {Answer} from "../../../models/answer";
 
 @Component({
   selector: 'app-testsession-view-overlay',
@@ -61,11 +62,11 @@ export class TestsessionViewOverlayComponent implements OnChanges {
   readonly horizontalLinesHandler = TUI_ALWAYS_DASHED;
   readonly verticalLinesHandler = TUI_ALWAYS_NONE;
 
-  localAxisXLabels: string[] = [];
-  localAxisYSecondaryLabels: string[] = [];
-  localMaxValue = 0;
-
   resultLoading: boolean = true;
+
+  isQuestionViewOverlayVisible: boolean = false;
+  selectedQuestion!: Question;
+  selectedAnswers!: Answer[];
 
   constructor(
     private testsessionResultService: TestsessionResultService,
@@ -86,18 +87,12 @@ export class TestsessionViewOverlayComponent implements OnChanges {
     let i = 0;
     console.log(this.testsessionGrades)
     for (const grade of  this.testsessionGrades) {
-      if (userPoints < grade.gradeValue) {
+      if (userPoints > grade.gradeValue) {
         gradeIndex = i;
       }
       i++;
     }
-    // console.log(gradeIndex);
-    // console.log(i);
-    if (gradeIndex != 0) {
-      this.userGrade.push([testsessionResultId, this.testsessionGrades[gradeIndex - 1].gradeName]);
-    } else {
-      this.userGrade.push([testsessionResultId, this.testsessionGrades[i - 1].gradeName]);
-    }
+    this.userGrade.push([testsessionResultId, this.testsessionGrades[gradeIndex].gradeName]);
   }
 
   getUserGradeByKey(key: number): string | undefined {
@@ -217,7 +212,6 @@ export class TestsessionViewOverlayComponent implements OnChanges {
                 if (testsessionQuestionResult.isCorrect) right++;
                 else wrong++;
               }
-              console.log(testsessionQuestionResult);
             });
             this.rightQuestions.push(right);
             this.wrongQuestions.push(wrong);
@@ -268,12 +262,16 @@ export class TestsessionViewOverlayComponent implements OnChanges {
   }
 
   getQuestionPoint(testsessionResultId: number, questionId: number): number {
-    const questionResult = this.findTestsessionQuestionResultsByTestsessionResultId(testsessionResultId).find(result => result.questionId === questionId);
+    const questionResult = this.findTestsessionQuestionResultsByTestsessionResultId(testsessionResultId).find(
+      result => result.questionId === questionId
+    );
     return questionResult ? questionResult.point : 0;
   }
 
   getResultClass(testsessionResultId: number, questionId: number): string {
-    const questionResult = this.findTestsessionQuestionResultsByTestsessionResultId(testsessionResultId).find(result => result.questionId === questionId);
+    const questionResult = this.findTestsessionQuestionResultsByTestsessionResultId(testsessionResultId).find(
+      result => result.questionId === questionId
+    );
     return questionResult ? (questionResult.isCorrect ? 'correct' : 'incorrect') : '';
   }
 
@@ -293,4 +291,36 @@ export class TestsessionViewOverlayComponent implements OnChanges {
     return index % 2 == 0 ? 'Верно' : 'Неверно';
   }
 
+  showQuestionOverlay(questionId: number) {
+    this.questions.forEach(question => {
+      if (question.id == questionId) {
+        this.selectedQuestion = question;
+      }
+    });
+    this.answerService.getAnswersByQuestionId(questionId).pipe(
+      tap(answers => {
+        this.selectedAnswers = answers;
+      }),
+      finalize(() => {
+        this.isQuestionViewOverlayVisible = true;
+      })
+    ).subscribe();
+  }
+
+  hideQuestionOverlay() {
+    this.isQuestionViewOverlayVisible = false;
+  }
+
+  getQuestionClass(id: number) {
+    const question = this.questions.find(
+      result => result.id === id
+    );
+    if (question?.questionType == 'practical') {
+      return 'practical';
+    } else if (question?.questionType == 'theoretical') {
+      return 'theoretical';
+    } else {
+      return '';
+    }
+  }
 }

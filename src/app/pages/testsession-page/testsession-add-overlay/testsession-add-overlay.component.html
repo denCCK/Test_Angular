@@ -2,104 +2,91 @@
 
   <div class="overlay-content">
 
+    <div class="container">
+      <h1 class="tui-text_h3 title">
+        Добавление тестирования
+      </h1>
+    </div>
+
+    <div class="container">
+      <tui-stepper [activeItemIndex]="currentStep">
+        <button *ngFor="let step of steps; let i = index" tuiStep (click)="setStep(i)">
+          {{ step }}
+        </button>
+      </tui-stepper>
+    </div>
+
     <div class="main-container">
-
-      <div class="container">
-        <h1 class="tui-text_h3 title">
-          Добавление вопросов
-        </h1>
-      </div>
-
-      <div class="container">
-        <tui-stepper [activeItemIndex]="0">
-          <button disabled tuiStep>Название</button>
-          <button disabled tuiStep>Описание</button>
-          <button disabled tuiStep>Дата начала</button>
-          <button disabled tuiStep>Дата окончания</button>
-          <button disabled tuiStep>Тест</button>
-          <button disabled tuiStep>Оценки</button>
-          <button disabled tuiStep>Дополнительно</button>
-        </tui-stepper>
-      </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <div class="two-column-container">
-
-          <div>
-            <div class="container">
-              <label for="testsessionName" class="label">Название тестовой сессии</label>
-              <tui-input id="testsessionName" class="input" formControlName="testsessionName" placeholder="Введите название" aria-label="Введите название тестовой сессии" />
-            </div>
-
-            <div class="container">
-              <label for="testsessionDescription" class="label">Описание тестовой сессии</label>
-              <tui-textarea id="testsessionDescription" class="input" formControlName="testsessionDescription" placeholder="Введите описание тестовой сессии" aria-label="Введите описание тестовой сессии" />
-            </div>
-
-            <div class="container">
-              <label for="startDate" class="label">Дата начала</label>
-              <tui-input-date-time id="startDate" class="input" formControlName="startDate" aria-label="Введите дату начала" />
-            </div>
-
-            <div class="container">
-              <label for="endDate" class="label">Дата окончания</label>
-              <tui-input-date-time id="endDate" class="input" formControlName="endDate" aria-label="Введите дату окончания" />
-            </div>
-
-            <div class="container">
-              <label for="test" class="label">Выберите тест</label>
-              <select id="test" class="input" formControlName="test" aria-label="Выберите тест" (change)="calculateTotalPoints()">
-                <option *ngFor="let test of tests" [value]="test.id">{{ test.testName }}</option>
-              </select>
-            </div>
-
-          </div>
-
-          <div>
-
-            <div class="container">
-              <header>Оценки</header>
-              <button type="button" (click)="addGrade()">Добавить оценку</button>
-              <div formArrayName="grades" *ngFor="let grade of grades.controls; let i = index">
-                <div [formGroupName]="i">
-                  <label for="gradeName" class="label">Название оценки</label>
-                  <input id="gradeName" class="input" formControlName="gradeName" placeholder="Введите название" />
-
-                  <label for="gradeValue" class="label">Значение оценки</label>
-                  <input id="gradeValue" class="input" formControlName="gradeValue" type="number" placeholder="Введите значение" [min]="0" [max]="totalPoints" />
-
-                  <button type="button" (click)="removeGrade(i)">Удалить</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="container">
-              <label for="questionsCount" class="label">Количество вопросов</label>
-              <tui-input-number id="questionsCount" class="input" formControlName="questionsCount"
-                                aria-label="Введите количество вопрсов на человека" />
-            </div>
-
-            <div class="container">
-              <label for="testsessionTime" class="label">Время прохождения (чч:мм)</label>
-              <tui-input-time id="testsessionTime" class="input" formControlName="testsessionTime">Введите время прохождения</tui-input-time>
-            </div>
-
-          </div>
-
+        <div class="container" *ngIf="currentStep === 0">
+          <label for="testsessionName" class="label">Название тестовой сессии</label>
+          <tui-input id="testsessionName" class="input" formControlName="testsessionName" placeholder="Введите название" aria-label="Введите название тестовой сессии" />
         </div>
 
+        <div class="container" *ngIf="currentStep === 1">
+          <label for="testsessionDescription" class="label">Описание тестовой сессии</label>
+          <tui-textarea id="testsessionDescription" class="input" formControlName="testsessionDescription" placeholder="Введите описание тестовой сессии" aria-label="Введите описание тестовой сессии" />
+        </div>
 
-
-        <div class="form-actions">
-          <div class="bottom-container">
-            <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
-            <button type="button" tuiButton (click)="onSubmit()">Добавить</button>
+        <div *ngIf="currentStep === 2">
+          <div class="container">
+            <label for="startDate" class="label">Дата начала</label>
+            <tui-input-date-time id="startDate" class="input" formControlName="startDate" aria-label="Введите дату начала" />
           </div>
 
+          <div class="container">
+            <label for="endDate" class="label">Дата окончания</label>
+            <tui-input-date-time id="endDate" class="input" formControlName="endDate" aria-label="Введите дату окончания" />
+          </div>
         </div>
+
+        <div class="container" *ngIf="currentStep === 3">
+          <label for="test" class="label">Выберите набор вопросов</label>
+          <select id="test" class="input" formControlName="test" aria-label="Выберите набор вопросов" (change)="calculateTotalPoints()">
+            <option *ngFor="let test of tests" [value]="test.id">{{ test.testName }}</option>
+          </select>
+        </div>
+
+        <div class="container" *ngIf="currentStep === 4">
+          <header>Оценки</header>
+          <button type="button" (click)="addGrade()">Добавить оценку</button>
+          <div formArrayName="grades" *ngFor="let grade of grades.controls; let i = index">
+            <div [formGroupName]="i">
+              <label for="gradeName" class="label">Название оценки</label>
+              <tui-input id="gradeName" class="input" formControlName="gradeName" />
+
+              <label for="gradeValue" class="label">Значение оценки</label>
+              <tui-input-number id="gradeValue" class="input" formControlName="gradeValue" [min]="0" [max]="totalPoints" />
+
+              <button type="button" (click)="removeGrade(i)">Удалить</button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="currentStep === 5">
+          <div class="container">
+            <label for="questionsCount" class="label">Количество вопросов</label>
+            <tui-input-number id="questionsCount" class="input" formControlName="questionsCount"
+                              aria-label="Введите количество вопрсов на человека" />
+          </div>
+
+          <div class="container">
+            <label for="testsessionTime" class="label">Время прохождения (чч:мм)</label>
+            <tui-input-time id="testsessionTime" class="input" formControlName="testsessionTime">Введите время прохождения</tui-input-time>
+          </div>
+        </div>
+
       </form>
 
+    </div>
+
+    <div class="bottom-container">
+      <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
+      <button type="button" tuiButton (click)="prevStep()" [disabled]="currentStep === 0">Назад</button>
+      <button type="button" tuiButton (click)="nextStep()" [disabled]="currentStep === 5 || !form.valid">Далее</button>
+      <button type="submit" tuiButton *ngIf="currentStep === 5" [disabled]="!form.valid" (click)="onSubmit()">Добавить</button>
     </div>
 
   </div>

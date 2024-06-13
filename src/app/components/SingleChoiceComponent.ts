@@ -14,9 +14,9 @@ import {MathJaxService} from "../service/MathJaxService";
           <div [formGroup]="form">
               <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
                   <div [formGroupName]="i">
-                      <input formControlName="isFormula" type="checkbox" (change)="toggleFormula(choice)" /> Формула
+                      <input formControlName="isFormula" type="checkbox" /> Формула
                       <div *ngIf="choice.get('isFormula')?.value; else textInput">
-                          <input formControlName="text" type="text" placeholder="Введите формулу" (input)="renderMath()" />
+                          <tui-input formControlName="text" placeholder="Введите формулу" (input)="renderMath()" />
                           <h3 [innerHTML]="choice.get('text')?.value | mathjax"></h3>
                       </div>
                       <ng-template #textInput>
@@ -67,12 +67,6 @@ export class SingleChoiceComponent implements OnInit, OnChanges {
 
   removeChoice(index: number) {
     this.choices.removeAt(index);
-  }
-
-  toggleFormula(choice: any) {
-    if (!choice.get('isFormula').value) {
-      choice.patchValue({ formula: '' });
-    }
   }
 
   renderMath() {

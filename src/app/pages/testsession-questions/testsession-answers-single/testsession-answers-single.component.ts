@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {Answer} from "../../../models/answer";
 import {FormArray, FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {MathJaxService} from "../../../service/MathJaxService";
 
 @Component({
   selector: 'app-testsession-answers-single',
@@ -17,10 +19,10 @@ export class TestsessionAnswersSingleComponent implements OnChanges {
   loading: boolean = true;
 
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private mathJaxService: MathJaxService, private sanitizer: DomSanitizer) {
     this.form = this.fb.group({
       choices: this.fb.array([]),
-      selectedChoice: new FormControl('0')
+      selectedChoice: new FormControl(`${0}`)
     });
     this.addChoice();
     this.form.valueChanges.subscribe(() => this.formChange.emit(this.form));
@@ -28,6 +30,10 @@ export class TestsessionAnswersSingleComponent implements OnChanges {
 
   get choices() {
     return this.form.get('choices') as FormArray;
+  }
+
+  get selectedChoiceControl(): FormControl {
+    return this.form.get('selectedChoice') as FormControl;
   }
 
   addChoice() {
@@ -91,4 +97,10 @@ export class TestsessionAnswersSingleComponent implements OnChanges {
       this.loading = false;
     }
   }
+
+  renderMath(value: string): SafeHtml {
+    this.mathJaxService.renderMathJax();
+    return this.sanitizer.bypassSecurityTrustHtml(`\\(${value}\\)`);
+  }
+
 }

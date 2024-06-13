@@ -7,15 +7,21 @@
     <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
       <div [formGroupName]="i">
         <div *ngIf="choice.get('isFormula')?.value; else textInput">
-          <div [innerHTML]="choice.get('text')?.value | mathjax"></div>
+          <div class="container">
+            <input [formControl]="selectedChoiceControl" type="radio" value="{{i}}" [attr.name]="'correctChoice'"/>
+            <div [innerHTML]="renderMath(choice.get('text')?.value)"></div>
+          </div>
         </div>
         <ng-template #textInput>
-          <div>{{i + 1}}) {{ choice.get('text')?.value }}</div>
+          <div class="container">
+            <input [formControl]="selectedChoiceControl" type="radio" value="{{i}}" [attr.name]="'correctChoice'"/>
+            <div> {{ choice.get('text')?.value }}</div>
+          </div>
         </ng-template>
       </div>
     </div>
-    <div *ngFor="let choice of choices.controls; let i = index">
-      <input formControlName="selectedChoice" type="radio" value="{{i}}" [attr.name]="'correctChoice'"/> {{i + 1}} Вариант
-    </div>
+<!--    <div *ngFor="let choice of choices.controls; let i = index">-->
+<!--      <input formControlName="selectedChoice" type="radio" value="{{i}}" [attr.name]="'correctChoice'"/> {{i + 1}} Вариант-->
+<!--    </div>-->
   </div>
 </tui-loader>

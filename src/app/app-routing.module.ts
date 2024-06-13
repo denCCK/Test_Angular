@@ -11,9 +11,9 @@ import {TestsessionErrorComponent} from "./pages/testsession-error/testsession-e
 import {AccessControlService} from "./service/AccessControlService";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: "login", component: LoginPageComponent},
-  { path: "main", component: MainPageComponent, canActivate: [AuthGuardService]},
+  { path: "", component: MainPageComponent},
   { path: 'testsession/:testsessionId/start', component: TestsessionStartComponent, canActivate: [AccessControlService] },
   { path: 'testsession/:testsessionId/questions', component: TestsessionQuestionsComponent},
   { path: 'testsession/end', component: TestsessionEndComponent },

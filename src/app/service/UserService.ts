@@ -8,6 +8,7 @@ import { User } from '../models/user';
   providedIn: 'root'
 })
 export class UserService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/users';
   private apiUrl = 'http://localhost:8080/api/users';
 
   constructor(private http: HttpClient) { }

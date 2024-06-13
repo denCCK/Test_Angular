@@ -17,6 +17,8 @@ import {TestService} from "../../service/TestService";
 export class TestsAddOverlayComponent implements OnInit{
   form: FormGroup;
   questions!: Question[];
+  currentStep: number = 0;
+  steps = ['Название', 'Описание', 'Вопросы'];
 
   @Input() isVisible: boolean = false;
   @Output() close = new EventEmitter<void>();
@@ -32,12 +34,50 @@ export class TestsAddOverlayComponent implements OnInit{
       }
     );
   }
-  constructor(private fb: FormBuilder, private questionService: QuestionService, private answerService: AnswerService, private userService: UserService, private testService: TestService) {
+  constructor(private fb: FormBuilder, private questionService: QuestionService, private userService: UserService, private testService: TestService) {
     this.form = this.fb.group({
-      testTitle: new FormControl(),
-      testDescription: new FormControl(),
+      testTitle: new FormControl('Название'),
+      testDescription: new FormControl('Описание'),
+      questions: new FormControl(),
     });
   }
+
+  canNavigateToStep(step: number): boolean {
+    if (step <= this.currentStep) {
+      return true;
+    }
+    return false;
+  }
+
+  setStep(index: number): void {
+    this.currentStep = index;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 7 && this.isStepValid(this.currentStep)) {
+      this.currentStep++;
+    }
+  }
+
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 0:
+        return this.form.controls['testTitle'].valid;
+      case 1:
+        return this.form.controls['testDescription'].valid;
+      case 2:
+        return this.form.controls['questions'].valid;
+      default:
+        return true;
+    }
+  }
+
 
   onSubmit(): void {
     if (this.form.valid) {

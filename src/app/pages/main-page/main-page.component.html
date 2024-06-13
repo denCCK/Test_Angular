@@ -7,9 +7,7 @@
   <tui-tabs-with-more
     class="tabs"
     [activeItemIndex]="activeItemIndex">
-
     <ng-container *ngFor="let tab of tabs">
-
       <ng-container *ngIf="isString(tab);">
         <button
           *tuiItem
@@ -18,9 +16,7 @@
           {{ tab }}
         </button>
       </ng-container>
-
     </ng-container>
-
   </tui-tabs-with-more>
 
 </div>

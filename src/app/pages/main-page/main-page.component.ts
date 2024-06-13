@@ -27,7 +27,7 @@ export class MainPageComponent implements AfterViewInit {
 
   readonly tabs = [
     'Вопросы',
-    'Тесты',
+    'Наборы вопросов',
     'Тестирование'
   ];
   activeElement = String(this.tabs[0]);
@@ -45,7 +45,7 @@ export class MainPageComponent implements AfterViewInit {
     if (activeElement === 'Вопросы') {
       this.dynamic.clear();
       this.dynamic.createComponent(QuestionsPageComponent);
-    } else if (activeElement === 'Тесты') {
+    } else if (activeElement === 'Наборы вопросов') {
       this.dynamic.clear();
       this.dynamic.createComponent(TestsPageComponent);
     } else if (activeElement === 'Тестирование') {

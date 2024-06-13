@@ -18,6 +18,10 @@ export class TestingPageComponent implements OnInit, OnChanges {
   testsessions!: Testsession[];
   testsession!: Testsession;
   tests!: Test[];
+  paginatedTestsessions: Testsession[] = [];
+  length = 10;
+  index = 0;
+  totalPages = 0;
 
   isAddOverlayVisible = false;
   isEditOverlayVisible = false;
@@ -43,15 +47,18 @@ export class TestingPageComponent implements OnInit, OnChanges {
 
   form = new FormGroup({
     filters: new FormControl([]),
+    searchQuery: new FormControl()
   });
 
-  length = 64;
-
-  index = 1;
+  paginateTestsessions() {
+    const start = (this.index) * this.length;
+    const end = start + this.length;
+    this.paginatedTestsessions = this.testsessions.slice(start, end);
+  }
 
   goToPage(index: number): void {
     this.index = index;
-    console.info('New page:', index);
+    this.paginateTestsessions();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -68,7 +75,8 @@ export class TestingPageComponent implements OnInit, OnChanges {
   loadTestsession() {
     this.testsessionService.getAllTestsessions().subscribe(testsessions => {
       this.testsessions = testsessions;
-      console.log(testsessions);
+      this.totalPages = Math.ceil(this.testsessions.length / this.length);
+      this.paginateTestsessions();
     });
   }
 
@@ -91,7 +99,6 @@ export class TestingPageComponent implements OnInit, OnChanges {
   showViewOverlay(testsession: Testsession) {
     this.isViewOverlayVisible = true;
     this.testsession = testsession;
-    console.log(this.testsession);
   }
 
   hideAddOverlay() {
@@ -115,5 +122,17 @@ export class TestingPageComponent implements OnInit, OnChanges {
     }, error => {
       console.error('Error deleting testsession:', error);
     });
+  }
+
+  searchTestsessions() {
+    const searchQuery = this.form.get('searchQuery')?.value.toLowerCase();
+    if (searchQuery) {
+      this.testsessions = this.testsessions.filter(testsession =>
+        testsession.testsessionName.toLowerCase().includes(searchQuery)
+      );
+      this.paginateTestsessions();
+    } else {
+      this.loadTestsession();
+    }
   }
 }

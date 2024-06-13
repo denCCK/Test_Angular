@@ -24,21 +24,63 @@ export class TestsessionAddOverlayComponent implements OnInit, OnChanges {
   tests!: Test[];
   testId = 0;
   totalPoints = 0;
+  currentStep: number = 0;
+  steps = ['Название', 'Описание', 'Дата начала/окончания', 'Набор', 'Оценки', 'Дополнительно'];
 
   @Input() isVisible: boolean = false;
   @Output() close = new EventEmitter<void>();
 
   constructor(private fb: FormBuilder, private testService: TestService, private testsessionService: TestsessionService, private gradeService: GradeService) {
     this.form = this.fb.group({
-      testsessionName: new FormControl(),
-      testsessionDescription: new FormControl(),
-      startDate: new FormControl(),
-      endDate: new FormControl(),
+      testsessionName: new FormControl('Название'),
+      testsessionDescription: new FormControl('Описание'),
+      startDate: new FormControl(this.fromDateToTuiDayAndTime(new Date())),
+      endDate: new FormControl(this.fromDateToTuiDayAndTime(new Date())),
       test: new FormControl(),
       grades: this.fb.array([]),
       questionsCount: new FormControl(),
       testsessionTime: new FormControl()
     });
+  }
+
+  canNavigateToStep(step: number): boolean {
+    if (step <= this.currentStep) {
+      return true;
+    }
+    return false;
+  }
+
+  setStep(index: number): void {
+    this.currentStep = index;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 7 && this.isStepValid(this.currentStep)) {
+      this.currentStep++;
+    }
+  }
+
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 0:
+        return this.form.controls['testsessionName'].valid;
+      case 1:
+        return this.form.controls['testsessionDescription'].valid;
+      case 2:
+        return this.form.controls['startDate'].valid && this.form.controls['endDate'].valid;
+      case 3:
+        return this.form.controls['test'].valid;
+      case 4:
+        return this.form.controls['grades'].valid;
+      default:
+        return true;
+    }
   }
 
   calculateTotalPoints(): void {
@@ -64,6 +106,13 @@ export class TestsessionAddOverlayComponent implements OnInit, OnChanges {
 
   fromTuiDayAndTimeToDate(tuiDay: TuiDay, tuiTime: TuiTime): Date {
     return new Date(tuiDay.year, tuiDay.month, tuiDay.day, tuiTime.hours, tuiTime.minutes, tuiTime.seconds, tuiTime.ms);
+  }
+
+  fromDateToTuiDayAndTime(date: Date): [TuiDay, TuiTime] {
+    const parsedDate = new Date(date);
+    const tuiDay = new TuiDay(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+    const tuiTime = new TuiTime(parsedDate.getHours(), parsedDate.getMinutes(), parsedDate.getSeconds(), parsedDate.getMilliseconds());
+    return [tuiDay, tuiTime];
   }
 
   get grades(): FormArray {

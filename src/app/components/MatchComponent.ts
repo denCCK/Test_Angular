@@ -25,10 +25,10 @@ import {MathJaxService} from "../service/MathJaxService";
 
             <div>
                 <label for="matchText" class="label">Соответствие</label>
-                input type="checkbox" formControlName="isMatchFormula" /> Ввести формулу
+                <input type="checkbox" formControlName="isMatchFormula" /> Ввести формулу
                 <div *ngIf="match.get('isMatchFormula')?.value; else matchTextInput">
-                    <tui-input formControlName="matchFormula" placeholder="Введите формулу" (input)="renderMath()"></tui-input>
-                    <div [innerHTML]="match.get('matchFormula')?.value | mathjax"></div>
+                    <tui-input formControlName="matchText" placeholder="Введите формулу" (input)="renderMath()"></tui-input>
+                    <div [innerHTML]="match.get('matchText')?.value | mathjax"></div>
                 </div>
                 <ng-template #matchTextInput>
                     <tui-input formControlName="matchText" placeholder="Введите соответствие"></tui-input>

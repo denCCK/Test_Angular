@@ -47,6 +47,8 @@
 .container {
   margin: 10px 20px 10px 20px;
   display: flex;
+  flex-direction: column;
+  column-gap: 5px;
 }
 
 .box {
@@ -62,6 +64,16 @@
 .incorrect {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+.practical {
+  background-color: #e7c791;
+  color: #ce9317;
+}
+
+.theoretical {
+  background-color: #a9b7e5;
+  color: #123fba;
 }
 
 :host,
@@ -112,4 +124,12 @@
   margin-right: 0.5rem;
 }
 
+.box {
+  width: auto;
+  height: auto;
 
+}
+.main-box {
+  width: 100vh;
+  height: 50vh;
+}

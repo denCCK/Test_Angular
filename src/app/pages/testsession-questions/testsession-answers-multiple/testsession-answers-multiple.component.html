@@ -8,10 +8,16 @@
     <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
       <div [formGroupName]="i">
         <div *ngIf="choice.get('isFormula')?.value; else textInput">
-          <div [innerHTML]="choice.get('text')?.value | mathjax"><input formControlName="isCorrect" type="checkbox" /></div>
+          <div class="container">
+            <input formControlName="isCorrect" type="checkbox" >
+            <div [innerHTML]="renderMath( choice.get('text')?.value)"></div>
+          </div>
         </div>
         <ng-template #textInput>
-          <div>{{ choice.get('text')?.value }}<input formControlName="isCorrect" type="checkbox" /></div>
+          <div class="container">
+            <input formControlName="isCorrect" type="checkbox" />
+            <div>{{ choice.get('text')?.value }}</div>
+          </div>
         </ng-template>
       </div>
     </div>

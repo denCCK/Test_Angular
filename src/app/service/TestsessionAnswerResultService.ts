@@ -7,6 +7,7 @@ import { TestsessionAnswerResult } from '../models/testsessionAnswerResult';
   providedIn: 'root'
 })
 export class TestsessionAnswerResultService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/testsession-answer-results';
   private apiUrl = 'http://localhost:8080/api/testsession-answer-results';
 
   constructor(private http: HttpClient) { }

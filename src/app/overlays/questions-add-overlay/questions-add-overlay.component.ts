@@ -111,27 +111,20 @@ export class QuestionsAddOverlayComponent {
 
           this.questionService.createQuestion(newQuestion).subscribe(
             (questionResponse: Question) => {
-              console.log('Question created successfully:', questionResponse);
               const answers: Answer[] = this.extractAnswersFromFormData(formData, questionResponse);
+              let i = 0;
               answers.forEach(answer => {
-                console.log(answer.answerText);
-                console.log(answer.answerImg);
-                console.log(answer.isCorrect);
-                console.log(answer.complianceText);
-                console.log(answer.complianceImg);
-                console.log(answer.question);
                 this.answerService.createAnswer(answer).subscribe(
                   (answerResponse: Answer) => {
-                    console.log('Answer created successfully:', answerResponse);
-                    this.close.emit();
+                    if (i == answers.length) this.close.emit();
                   },
                   error => {
-                    console.error('Error creating answer:', error);
                   }
                 );
+                i++;
               });
 
-
+              //this.close.emit();
 
             },
             error => {
@@ -139,7 +132,7 @@ export class QuestionsAddOverlayComponent {
             }
           );
 
-          this.close.emit();
+          //this.close.emit();
         },
         error => {
           console.error('Error fetching user:', error);
@@ -220,7 +213,6 @@ export class QuestionsAddOverlayComponent {
   }
 
   closeOverlay(): void {
-    console.log(new Date());
     this.close.emit();
   }
 }

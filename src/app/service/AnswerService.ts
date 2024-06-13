@@ -8,6 +8,7 @@ import { Answer } from "../models/answer";
 })
 export class AnswerService {
   private apiUrl = 'http://localhost:8080/api/answers';
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/answers';
 
   constructor(private http: HttpClient) { }
 

@@ -1,82 +1,111 @@
 <div class="overlay" *ngIf="isVisible">
   <div class="overlay-content">
 
-    <tui-loader
-      class="loader"
-      [inheritColor]="true"
-      [overlay]="true"
-      [showLoader]="loading">
-      <header class="header">
-        Изменение теста
-      </header>
+    <div class="container">
+      <h1 class="tui-text_h3 title">
+        Изменение набора вопросов
+      </h1>
+    </div>
 
-      <nav class="steps">
-        <div class="step"><span class="step-number">1</span>Название</div>
-        <div class="step"><span class="step-number">2</span>Описание</div>
-        <div class="step"><span class="step-number">3</span>Выбор вопросов</div>
-      </nav>
+    <div class="container">
+      <tui-stepper [activeItemIndex]="currentStep">
+        <button *ngFor="let step of steps; let i = index" tuiStep (click)="setStep(i)">
+          {{ step }}
+        </button>
+      </tui-stepper>
+    </div>
+
+    <div class="main-container">
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <div class="container">
-          <label for="questionTitle" class="label">Название теста</label>
-          <tui-input id="questionTitle" class="input" formControlName="testTitle" placeholder="Введите название" aria-label="Введите название теста" />
-        </div>
-
-        <div class="container">
-          <label for="questionDescription" class="label">Описание теста</label>
-          <tui-textarea id="questionDescription" class="input" formControlName="testDescription" placeholder="Введите постановку вопроса" aria-label="Описнаие теста" />
-        </div>
-
-        <div class="container">
-          <app-question-selector
-            [questions]="questions"
-            [selectedQuestions]="selectedQuestions"
-            (questionsSelected)="onQuestionsSelected($event)">
-          </app-question-selector>
-        </div>
-
-
-        <div class="container">
-          <div class="question-selector">
-            <h2>Выбранные вопросы</h2>
-            <table class="tui-table">
-              <tbody>
-              <tr>
-                <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
-                <th class="tui-table__th">Сложность</th>
-                <th class="tui-table__th">Тип</th>
-                <th class="tui-table__th">Практ./Теор.</th>
-                <th class="tui-table__th tui-table__th_last"></th>
-              </tr>
-              </tbody>
-              <tbody>
-              <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let question of selectedQuestions">
-                <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
-                <td class="tui-table__td">{{ question.difficulty }}</td>
-                <td class="tui-table__td">{{ question.answersType }}</td>
-                <td class="tui-table__td">{{ question.questionType }}</td>
-                <td class="tui-table__td tui-table__td_last">
-                  <button (click)="removeQuestion(question)">Убрать вопрос</button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+        <div class="container" *ngIf="currentStep === 0">
+          <label for="testTitle" class="label">Название набора</label>
+          <tui-input id="testTitle" class="input" formControlName="testTitle" ></tui-input>
+          <div *ngIf="form.controls['testTitle'].invalid && form.controls['testTitle'].touched" class="error">
+            Название вопроса обязательно для заполнения.
           </div>
         </div>
 
-        <div class="form-actions">
+        <div class="container" *ngIf="currentStep === 1">
+          <label for="testDescription" class="label">Описание набора</label>
+          <tui-textarea id="testDescription" class="input" formControlName="testDescription"></tui-textarea>
+        </div>
+
+        <div class="container" *ngIf="currentStep === 2">
+
           <div class="two-column-container">
-            <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
-            <button type="button" tuiButton (click)="onSubmit()">Изменить</button>
+
+            <div class="question-selector">
+              <h2>Выберите вопросы</h2>
+              <tui-scrollbar class="box">
+                <table class="tui-table">
+                  <tbody>
+                  <tr>
+                    <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
+                    <th class="tui-table__th">Сложность</th>
+                    <th class="tui-table__th">Тип</th>
+                    <th class="tui-table__th">Практ./Теор.</th>
+                    <th class="tui-table__th tui-table__th_last"></th>
+                  </tr>
+                  </tbody>
+                  <tbody>
+                  <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let question of questions">
+                    <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
+                    <td class="tui-table__td">{{ question.difficulty }}</td>
+                    <td class="tui-table__td">{{ question.answersType }}</td>
+                    <td class="tui-table__td">{{ question.questionType }}</td>
+                    <td class="tui-table__td tui-table__td_last">
+                      <button type="button" (click)="toggleQuestionSelection(question)">Добавить</button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </tui-scrollbar>
+            </div>
+
+            <div class="question-selector">
+              <h2>Выбранные вопросы</h2>
+              <tui-scrollbar class="box">
+                <table class="tui-table">
+                  <tbody>
+                  <tr>
+                    <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
+                    <th class="tui-table__th">Сложность</th>
+                    <th class="tui-table__th">Тип</th>
+                    <th class="tui-table__th">Практ./Теор.</th>
+                    <th class="tui-table__th tui-table__th_last"></th>
+                  </tr>
+                  </tbody>
+                  <tbody>
+                  <tr class="tui-table__tr tui-table__tr_border_none" *ngFor="let question of selectedQuestions">
+                    <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
+                    <td class="tui-table__td">{{ question.difficulty }}</td>
+                    <td class="tui-table__td">{{ question.answersType }}</td>
+                    <td class="tui-table__td">{{ question.questionType }}</td>
+                    <td class="tui-table__td tui-table__td_last">
+                      <button (click)="removeQuestion(question)">Убрать вопрос</button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </tui-scrollbar>
+            </div>
+
           </div>
 
         </div>
 
       </form>
-    </tui-loader>
 
+    </div>
 
+    <div class="bottom-container">
+      <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
+      <button type="button" tuiButton (click)="prevStep()" [disabled]="currentStep === 0">Назад</button>
+      <button type="button" tuiButton (click)="nextStep()" [disabled]="currentStep === 2 || !form.valid">Далее</button>
+      <button type="submit" tuiButton *ngIf="currentStep === 2" [disabled]="!form.valid" (click)="onSubmit()">Изменить</button>
+    </div>
 
   </div>
 </div>

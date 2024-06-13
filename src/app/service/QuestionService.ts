@@ -7,6 +7,7 @@ import { Question } from '../models/question';
   providedIn: 'root'
 })
 export class QuestionService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/questions';
   private apiUrl = 'http://localhost:8080/api/questions';
 
   constructor(private http: HttpClient) { }

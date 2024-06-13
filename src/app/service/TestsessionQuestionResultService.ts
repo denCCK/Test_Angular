@@ -7,6 +7,7 @@ import { TestsessionQuestionResult } from '../models/testsessionQuestionResult';
   providedIn: 'root'
 })
 export class TestsessionQuestionResultService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/testsession-question-results';
   private apiUrl = 'http://localhost:8080/api/testsession-question-results';
 
   constructor(private http: HttpClient) { }
@@ -34,5 +35,5 @@ export class TestsessionQuestionResultService {
   getQuestionResultsByTestsessionResultId(id: number): Observable<TestsessionQuestionResult[]> {
     return this.http.get<TestsessionQuestionResult[]>(`${this.apiUrl}/testsession-result/${id}`);
   }
-  
+
 }

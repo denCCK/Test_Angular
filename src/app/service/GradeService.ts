@@ -7,6 +7,7 @@ import { Grade } from '../models/grade';
   providedIn: 'root'
 })
 export class GradeService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/grades';
   private apiUrl = 'http://localhost:8080/api/grades';
 
   constructor(private http: HttpClient) { }

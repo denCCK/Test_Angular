@@ -3,6 +3,7 @@ import {Answer} from "../../../models/answer";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {AnswerService} from "../../../service/AnswerService";
 import {MathJaxService} from "../../../service/MathJaxService";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-testsession-answers-open',
@@ -19,7 +20,7 @@ export class TestsessionAnswersOpenComponent implements OnChanges {
   loading: boolean = true;
 
 
-  constructor(private fb: FormBuilder, private answerService: AnswerService, private mathJaxService: MathJaxService) {
+  constructor(private fb: FormBuilder, private sanitizer: DomSanitizer, private mathJaxService: MathJaxService) {
     this.form = this.fb.group({
       text: '',
       isFormula: null,
@@ -50,8 +51,9 @@ export class TestsessionAnswersOpenComponent implements OnChanges {
     }
   }
 
-  renderMath() {
+  renderMath(value: string): SafeHtml {
     this.mathJaxService.renderMathJax();
+    return this.sanitizer.bypassSecurityTrustHtml(`\\(${value}\\)`);
   }
 
 }

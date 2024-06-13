@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
+import {ChangeDetectionStrategy, Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Question} from "../../models/question";
 import {QuestionService} from "../../service/QuestionService";
@@ -9,10 +9,11 @@ import {Answer} from "../../models/answer";
 @Component({
   selector: "questions-page",
   templateUrl: "./questions-page.component.html",
-  styleUrl: "./questions-page.component.less"
+  styleUrl: "./questions-page.component.less",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
-export class QuestionsPageComponent implements OnInit, OnChanges{
+export class QuestionsPageComponent {
   questions: Question[] = [];
   paginatedQuestions: Question[] = [];
   selectedQuestionId: number | null = null;
@@ -21,7 +22,7 @@ export class QuestionsPageComponent implements OnInit, OnChanges{
 
   items = ['Наименование', 'Сложность', 'Тип', 'Практ./Теор.', 'Дата создания', 'Дата последнего изменения'];
   form: FormGroup;
-  length = 3;
+  length = 10;
   index = 0;
   totalPages = 0;
 
@@ -34,12 +35,6 @@ export class QuestionsPageComponent implements OnInit, OnChanges{
 
   ngOnInit() {
     this.loadQuestions();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes["questions"] && changes["questions"].currentValue) {
-      this.questions = changes["questions"].currentValue;
-    }
   }
 
   loadQuestions() {
@@ -81,6 +76,8 @@ export class QuestionsPageComponent implements OnInit, OnChanges{
   }
 
   deleteQuestion(id: number): void {
+    this.paginatedQuestions = this.paginatedQuestions.filter(question => question.id !== id);
+
     this.answerService.getAnswersByQuestionId(id).subscribe((oldAnswers: Answer[]) => {
       oldAnswers.forEach(answer => {
         this.answerService.deleteAnswer(answer.id).subscribe(() => {
@@ -98,6 +95,44 @@ export class QuestionsPageComponent implements OnInit, OnChanges{
     }, error => {
       console.error('Error getting old answers:', error);
     });
+  }
+
+  searchQuestions() {
+    const searchQuery = this.form.get('searchQuery')?.value.toLowerCase();
+    if (searchQuery) {
+      this.questions = this.questions.filter(question =>
+        question.questionName.toLowerCase().includes(searchQuery)
+      );
+      this.paginateQuestions();
+    } else {
+      this.loadQuestions();
+    }
+  }
+
+  getAnswerTypeName(answerType: string): string {
+    switch (answerType) {
+      case 'single':
+        return 'Одиночный';
+      case 'multiple':
+        return 'Множественный';
+      case 'match':
+        return 'Соответствие';
+      case 'open':
+        return 'Открытый';
+      default:
+        return '';
+    }
+  }
+
+  getQuestionTypeName(questionType: string): string {
+    switch (questionType) {
+      case 'practical':
+        return 'Практический';
+      case 'theoretical':
+        return 'Теоретический';
+      default:
+        return '';
+    }
   }
 
 }

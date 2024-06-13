@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {Answer} from "../../../models/answer";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {MathJaxService} from "../../../service/MathJaxService";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-testsession-answers-multiple',
@@ -17,7 +19,7 @@ export class TestsessionAnswersMultipleComponent implements OnChanges {
   loading: boolean = true;
 
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private mathJaxService: MathJaxService, private sanitizer: DomSanitizer) {
     this.form = this.fb.group({
       choices: this.fb.array([]),
     });
@@ -53,6 +55,7 @@ export class TestsessionAnswersMultipleComponent implements OnChanges {
   }
 
   private loadAnswers() {
+    this.loading = true;
     if (this.answers != undefined) {
       this.choices.clear();
       if (this.userAnswers.length != 0) {
@@ -80,14 +83,12 @@ export class TestsessionAnswersMultipleComponent implements OnChanges {
           }));
         });
       }
-      // this.answers.forEach(answer => {
-      //   this.choices.push(this.fb.group({
-      //     text: answer.answerText,
-      //     isCorrect: false,
-      //     image: answer.answerImg,
-      //   }));
-      // });
-      this.loading = false;
     }
+    this.loading = false;
+  }
+
+  renderMath(value: string): SafeHtml {
+    this.mathJaxService.renderMathJax();
+    return this.sanitizer.bypassSecurityTrustHtml(`\\(${value}\\)`);
   }
 }

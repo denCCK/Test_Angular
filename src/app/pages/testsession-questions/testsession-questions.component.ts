@@ -1,4 +1,4 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, HostListener, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {Question} from "../../models/question";
 import {TestsessionService} from "../../service/TestsessionService";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -63,6 +63,53 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
     });
     this.testsessionId = this.route.snapshot.params['testsessionId'];
   }
+
+  saveState() {
+    const state = {
+      testsessionId: this.testsessionId,
+      currentQuestion: this.currentQuestion,
+      currentQuestionIndex: this.currentQuestionIndex,
+      currentAnswers: this.currentAnswers,
+      currentUserAnswers: this.currentUserAnswers,
+      remainingTime: this.remainingTime,
+      userAnswers: this.userAnswers,
+      questions: this.questions,
+      test: this.test,
+      questionAnswers: this.questionAnswers,
+      testsessionResult: this.testsessionResult,
+      testsessionQuestionsResults: this.testsessionQuestionResults,
+      testsessionAnswerResults: this.testsessionAnswerResults
+    };
+    localStorage.setItem('testsessionState', JSON.stringify(state));
+  }
+
+  @HostListener('window:beforeunload')
+  ngOnDestroy() {
+    this.saveState();
+  }
+
+  loadState() {
+    const savedState = localStorage.getItem('testsessionState');
+    if (savedState) {
+      const state = JSON.parse(savedState);
+      this.testsessionId = state.testsessionId;
+      this.currentQuestion = state.currentQuestion;
+      this.currentQuestionIndex = state.currentQuestionIndex;
+      this.currentAnswers = state.currentAnswers;
+      this.currentUserAnswers = state.currentUserAnswers;
+      this.remainingTime = state.remainingTime;
+      this.userAnswers = state.userAnswers;
+      this.questions = state.questions;
+      this.questionAnswers = state.questionAnswers;
+      this.testsessionResult = state.testsessionResult;
+      this.testsessionQuestionResults = state.testsessionQuestionResults;
+      this.testsessionAnswerResults = state.testsessionAnswerResults;
+      this.test = state.test;
+      this.selectQuestion(state.currentQuestionIndex);
+      this.startTimer(new Date(state.remainingTime * 1000));
+    }
+  }
+
 
   startTimer(time: Date) {
     const newTime = new Date(time);
@@ -197,6 +244,11 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
       this.name = params['name'];
       this.surname = params['surname'];
     });
+
+    // const savedState = localStorage.getItem('testsessionState');
+    // if (savedState) {
+    //   this.loadState();
+    // }
 
     this.testsessionService.getTestsessionById(this.testsessionId).pipe(
       tap(testsession => {

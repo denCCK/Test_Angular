@@ -1,10 +1,10 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {ChangeDetectorRef, Pipe, PipeTransform} from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {MathJaxService} from "../service/MathJaxService";
 
 @Pipe({
   name: 'mathjax',
-  pure: false
+  pure: true
 })
 export class MathJaxPipe implements PipeTransform {
 

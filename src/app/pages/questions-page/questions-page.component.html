@@ -1,30 +1,24 @@
 <meta charset="utf-8">
 <div class="container">
-  <div class="top-container">
-    <form [formGroup]="form">
-      <tui-filter
-        formControlName="filters"
-        [content]="content"
-        [items]="items">
-        <div class="filters-container"></div>
-      </tui-filter>
-      <ng-template #content let-item>
-        {{ item }}
-      </ng-template>
+  <form [formGroup]="form">
+    <div class="top-container">
+
       <tui-input
         formControlName="searchQuery"
         tuiTextfieldSize="m"
         [tuiTextfieldCleaner]="true"
-        [tuiTextfieldLabelOutside]="true">
-        Введите название вопроса
+        [tuiTextfieldLabelOutside]="true" (input)="searchQuestions()">
+        Введите наименование вопроса
       </tui-input>
-    </form>
-  </div>
+
+    </div>
+  </form>
   <div class="image-wrapper">
+
     <table tuiTable>
       <thead>
         <tr>
-          <th class="tui-table__th tui-table__th_first">Наименование вопроса</th>
+          <th class="tui-table__th tui-table__th_first">Наименование</th>
           <th class="tui-table__th">Сложность</th>
           <th class="tui-table__th">Тип</th>
           <th class="tui-table__th">Практ./Теор.</th>
@@ -38,15 +32,29 @@
       <tr class="tui-table__tr" *ngFor="let question of paginatedQuestions">
         <td class="tui-table__td tui-table__td_first">{{ question.questionName }}</td>
         <td class="tui-table__td">{{ question.difficulty }}</td>
-        <td class="tui-table__td">{{ question.answersType }}</td>
-        <td class="tui-table__td">{{ question.questionType }}</td>
+        <td class="tui-table__td">{{ getAnswerTypeName(question.answersType) }}</td>
+        <td class="tui-table__td">{{ getQuestionTypeName(question.questionType) }}</td>
         <td class="tui-table__td">{{ question.theme }}</td>
         <td class="tui-table__td">{{ question.creationDate | date:'medium' }}</td>
         <td class="tui-table__td">{{ question.lastChangeDate | date:'medium' }}</td>
         <td class="tui-table__td tui-table__td_last">
           <div class="two-column-container">
-            <tui-svg (click)="showEditOverlay(question.id)" src="tuiIconEditLarge" ></tui-svg>
-            <tui-svg (click)="deleteQuestion(question.id)" src="tuiIconTrash2Large"></tui-svg>
+            <button appearance="icon"
+                    icon="tuiIconEditLarge"
+                    size="s"
+                    tuiHint="Редактировать данный вопрос"
+                    tuiHintDescribe
+                    tuiHintDirection="left"
+                    tuiIconButton
+                    type="button" (click)="showEditOverlay(question.id)"></button>
+            <button appearance="icon"
+                    icon="tuiIconTrash2Large"
+                    size="s"
+                    tuiHint="Удалить данный вопрос"
+                    tuiHintDescribe
+                    tuiHintDirection="right"
+                    tuiIconButton
+                    type="button" (click)="deleteQuestion(question.id)"></button>
           </div>
         </td>
       </tr>
@@ -55,8 +63,16 @@
 
   </div>
   <div class="bottom-container">
-    <button tuiButton (click)="showAddOverlay()">Добавить вопрос</button>
-    <button tuiButton (click)="loadQuestions()">Обновить</button>
+    <button tuiButton
+            tuiHint="Добавить новый вопрос"
+            tuiHintDescribe
+            tuiHintDirection="top"
+            (click)="showAddOverlay()">Добавить</button>
+    <button tuiButton
+            tuiHint="Обновить список вопросов"
+            tuiHintDescribe
+            tuiHintDirection="top"
+            (click)="loadQuestions()">Обновить</button>
     <div class="pagination-container">
       <tui-pagination
         size="l"

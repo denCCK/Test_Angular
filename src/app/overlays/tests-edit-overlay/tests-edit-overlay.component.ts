@@ -17,6 +17,8 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
   form: FormGroup;
   questions!: Question[];
   creationDate!: Date;
+  currentStep: number = 0;
+  steps = ['Название', 'Описание', 'Вопросы'];
 
   @Input() isVisible: boolean = false;
   @Input() testId!: number;
@@ -34,6 +36,42 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
         console.error('Error fetching questions:', error);
       }
     );
+  }
+
+  canNavigateToStep(step: number): boolean {
+    if (step <= this.currentStep) {
+      return true;
+    }
+    return false;
+  }
+
+  setStep(index: number): void {
+    this.currentStep = index;
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < 7 && this.isStepValid(this.currentStep)) {
+      this.currentStep++;
+    }
+  }
+
+  isStepValid(step: number): boolean {
+    switch (step) {
+      case 0:
+        return this.form.controls['testTitle'].valid;
+      case 1:
+        return this.form.controls['testDescription'].valid;
+      case 2:
+        return this.form.controls['questions'].valid;
+      default:
+        return true;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -126,5 +164,12 @@ export class TestsEditOverlayComponent implements OnInit, OnChanges {
   closeOverlay() {
     this.loadTest(this.testId);
     this.close.emit();
+  }
+
+  toggleQuestionSelection(question: Question): void {
+    const index = this.selectedQuestions.findIndex(q => q.id === question.id);
+    if (index == -1) {
+      this.selectedQuestions.push(question);
+    }
   }
 }

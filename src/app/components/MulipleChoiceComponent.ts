@@ -1,5 +1,14 @@
 // multiple-choice.component.ts
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import {Answer} from "../models/answer";
 import {MathJaxService} from "../service/MathJaxService";
@@ -10,9 +19,9 @@ import {MathJaxService} from "../service/MathJaxService";
     <div [formGroup]="form">
       <div formArrayName="choices" *ngFor="let choice of choices.controls; let i = index">
         <div [formGroupName]="i">
-            <input formControlName="isFormula" type="checkbox" (change)="toggleFormula(choice)" /> Формула
+            <input formControlName="isFormula" type="checkbox"/> Формула
             <div *ngIf="choice.get('isFormula')?.value; else textInput">
-                <tui-input formControlName="text" placeholder="Введите формулу" (input)="renderMath()" />
+                <tui-input formControlName="text" placeholder="Введите формулу" (input)="renderMath()"/>
                 <h3 [innerHTML]="choice.get('text')?.value | mathjax"></h3>
             </div>
             <ng-template #textInput>
@@ -59,16 +68,6 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
     this.choices.removeAt(index);
   }
 
-  toggleFormula(choice: any) {
-    if (!choice.get('isFormula').value) {
-      choice.patchValue({ formula: '' });
-    }
-  }
-
-  renderMath() {
-    this.mathJaxService.renderMathJax();
-  }
-
   ngOnInit(): void {
     console.log(this.answers);
   }
@@ -92,5 +91,9 @@ export class MultipleChoiceComponent implements OnInit, OnChanges {
         }));
       })
     }
+  }
+
+  renderMath() {
+    this.mathJaxService.renderMathJax();
   }
 }

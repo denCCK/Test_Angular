@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TestsessionResult } from '../models/testsessionResult';
-import { TestsessionQuestionResult } from '../models/testsessionQuestionResult';
-import { TestsessionAnswerResult } from '../models/testsessionAnswerResult';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TestsessionResultService {
+  //private apiUrl = 'http://angulartest.asuscomm.com:8080/api/testsession-results';
   private apiUrl = 'http://localhost:8080/api/testsession-results';
 
   constructor(private http: HttpClient) { }

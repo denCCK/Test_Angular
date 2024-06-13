@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {Answer} from "../../../models/answer";
 import {FormArray, FormBuilder, FormGroup} from "@angular/forms";
+import {MathJaxService} from "../../../service/MathJaxService";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-testsession-answers-match',
@@ -17,7 +19,7 @@ export class TestsessionAnswersMatchComponent implements OnChanges {
   answerMatches: string[] = [];
   loading: boolean = true;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private mathJaxService: MathJaxService, private sanitizer: DomSanitizer) {
     this.form = this.fb.group({
       matches: this.fb.array([]),
     });
@@ -34,13 +36,23 @@ export class TestsessionAnswersMatchComponent implements OnChanges {
     }
   }
 
+  shuffleArray<T>(array: T[]): T[] {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+  }
 
   private loadAnswers() {
     if (this.answers != undefined) {
       this.matches.clear();
+      this.answerMatches  = [];
       this.answers.forEach(answer => {
         this.answerMatches.push(answer.complianceText);
       });
+      this.answerMatches = this.shuffleArray(this.answerMatches);
       if (this.userAnswers.length != 0) {
         this.userAnswers.forEach(userAnswer => {
           this.matches.push(this.fb.group({
@@ -77,4 +89,10 @@ export class TestsessionAnswersMatchComponent implements OnChanges {
     }
     this.loading = false;
   }
+
+  renderMath(value: string): SafeHtml {
+    this.mathJaxService.renderMathJax();
+    return this.sanitizer.bypassSecurityTrustHtml(`\\(${value}\\)`);
+  }
+
 }
