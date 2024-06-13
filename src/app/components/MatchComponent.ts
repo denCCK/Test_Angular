@@ -19,7 +19,6 @@ import {MathJaxService} from "../service/MathJaxService";
                 </div>
                 <ng-template #textInput>
                     <tui-input id="text" formControlName="text" placeholder="Введите ответ"></tui-input>
-                    <input formControlName="image" type="file" />
                 </ng-template>
             </div>
 
@@ -32,7 +31,6 @@ import {MathJaxService} from "../service/MathJaxService";
                 </div>
                 <ng-template #matchTextInput>
                     <tui-input formControlName="matchText" placeholder="Введите соответствие"></tui-input>
-                    <input formControlName="matchImage" type="file" />
                 </ng-template>
             </div>
 
