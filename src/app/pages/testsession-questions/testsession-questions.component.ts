@@ -21,7 +21,7 @@ import {TestsessionAnswerResultService} from "../../service/TestsessionAnswerRes
   templateUrl: './testsession-questions.component.html',
   styleUrl: './testsession-questions.component.less'
 })
-export class TestsessionQuestionsComponent implements OnInit, OnChanges {
+export class TestsessionQuestionsComponent implements OnInit {
   testsessionId: number;
   testsession!: Testsession;
   test!: Test;
@@ -62,52 +62,6 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
       answers: new FormControl()
     });
     this.testsessionId = this.route.snapshot.params['testsessionId'];
-  }
-
-  saveState() {
-    const state = {
-      testsessionId: this.testsessionId,
-      currentQuestion: this.currentQuestion,
-      currentQuestionIndex: this.currentQuestionIndex,
-      currentAnswers: this.currentAnswers,
-      currentUserAnswers: this.currentUserAnswers,
-      remainingTime: this.remainingTime,
-      userAnswers: this.userAnswers,
-      questions: this.questions,
-      test: this.test,
-      questionAnswers: this.questionAnswers,
-      testsessionResult: this.testsessionResult,
-      testsessionQuestionsResults: this.testsessionQuestionResults,
-      testsessionAnswerResults: this.testsessionAnswerResults
-    };
-    localStorage.setItem('testsessionState', JSON.stringify(state));
-  }
-
-  @HostListener('window:beforeunload')
-  ngOnDestroy() {
-    this.saveState();
-  }
-
-  loadState() {
-    const savedState = localStorage.getItem('testsessionState');
-    if (savedState) {
-      const state = JSON.parse(savedState);
-      this.testsessionId = state.testsessionId;
-      this.currentQuestion = state.currentQuestion;
-      this.currentQuestionIndex = state.currentQuestionIndex;
-      this.currentAnswers = state.currentAnswers;
-      this.currentUserAnswers = state.currentUserAnswers;
-      this.remainingTime = state.remainingTime;
-      this.userAnswers = state.userAnswers;
-      this.questions = state.questions;
-      this.questionAnswers = state.questionAnswers;
-      this.testsessionResult = state.testsessionResult;
-      this.testsessionQuestionResults = state.testsessionQuestionResults;
-      this.testsessionAnswerResults = state.testsessionAnswerResults;
-      this.test = state.test;
-      this.selectQuestion(state.currentQuestionIndex);
-      this.startTimer(new Date(state.remainingTime * 1000));
-    }
   }
 
 
@@ -245,11 +199,6 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
       this.surname = params['surname'];
     });
 
-    // const savedState = localStorage.getItem('testsessionState');
-    // if (savedState) {
-    //   this.loadState();
-    // }
-
     this.testsessionService.getTestsessionById(this.testsessionId).pipe(
       tap(testsession => {
         this.testsession = testsession;
@@ -297,13 +246,6 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
       })
     ).subscribe();
 
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['testsession'] && changes['testsession'].currentValue !== changes['testsession'].previousValue) {
-      if (this.testsession) {
-      }
-    }
   }
 
   selectQuestion(index: number): void {
@@ -445,8 +387,6 @@ export class TestsessionQuestionsComponent implements OnInit, OnChanges {
           currentUserAnswers.forEach(userAnswer => {
 
             if (userAnswer.id == answer.id) {
-              // console.log(userAnswer);
-              // console.log(answer);
               if (!this.answersEquals(userAnswer, answer)) {
                 isCorrect = false;
                 rightAnswers--;

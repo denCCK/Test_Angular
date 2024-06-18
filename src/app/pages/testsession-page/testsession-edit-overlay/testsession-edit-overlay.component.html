@@ -4,7 +4,7 @@
 
     <div class="container">
       <h1 class="tui-text_h3 title">
-        Добавление тестирования
+        Изменение тестирования
       </h1>
     </div>
 
@@ -86,7 +86,7 @@
       <button type="button" tuiButton (click)="closeOverlay()">Отмена</button>
       <button type="button" tuiButton (click)="prevStep()" [disabled]="currentStep === 0">Назад</button>
       <button type="button" tuiButton (click)="nextStep()" [disabled]="currentStep === 5 || !form.valid">Далее</button>
-      <button type="submit" tuiButton *ngIf="currentStep === 5" [disabled]="!form.valid" (click)="onSubmit()">Добавить</button>
+      <button type="submit" tuiButton *ngIf="currentStep === 5" [disabled]="!form.valid" (click)="onSubmit()">Изменить</button>
     </div>
 
   </div>

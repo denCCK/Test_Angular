@@ -216,7 +216,6 @@ export class TestsessionViewOverlayComponent implements OnChanges {
                 });
               }),
               finalize(() => {
-                console.log(this.answers);
               })
             ).subscribe();
             this.axisXLabels.push(question.questionName);

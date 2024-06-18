@@ -152,6 +152,7 @@ export class TestsessionEditOverlayComponent implements OnChanges {
 
     this.calculateTotalPoints();
 
+    this.grades.clear();
     this.gradeService.getGradesByTestsessionId(this.testsession.id).subscribe(grades => {
       grades.forEach(grad => {
         this.grades.push(this.fb.group({
